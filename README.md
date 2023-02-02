@@ -86,13 +86,16 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - This controls the source of the american data, either from the NOAA’s NOMADS service or their cloud data partnership with AWS. It’s best to have this set to nomads, but if you are rate limited by NOAA, you can change this variable to aws.
 - Example: ```ingest_type = nomads```
 
+```detect_recent_run```
+- This controls whether the model automatically selects the most recent initialization data to run with to reduce confusion that may arise from having to manually set it (more on this below). This only works for 00 and 12z cycles, so keep in mind that if using American-only data initialization, this will not run with 06 or 18z data even if they are the most recent American data runs. Generally speaking, if you're using any Canadian data, it's a good idea to have this toggled to True.
+- Example: ```detect_recent_run```
+
 ```datestr```
-- This variable controls the date that the initialization data is pulled from. The file nomenclature is as follows: YYYYMMDD.
+- This variable controls the date that the initialization data is pulled from. The file nomenclature is as follows: YYYYMMDD. If ```detect_recent_run```is toggled to True, this variable doesn't matter.
 - Example: ```datestr = 20230131```
 
-
 ```cycle```
-- Similarly, this controls the model cycle that the initialization data is coming from. This is either 00, 06, 12, or 18 (00 or 12 only if using Canadian data).
+- Similarly, this controls the model cycle that the initialization data is coming from. This is either 00, 06, 12, or 18 (00 or 12 only if using Canadian data). If ```detect_recent_run```is toggled to True, this variable doesn't matter.
 - Example: ```cycle = 12```
 
 ```plot_types```
