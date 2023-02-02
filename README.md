@@ -43,7 +43,7 @@ First, download the directory. On this site, click the green button that says "C
 In terms of installing the model, that’s all you need to do! You’re ready to start configuring the model.
 
 ### Installing future updates
-Inevitably, I will make improvements to the model; adding new plot types, speeding up data ingest and processing, etc. The easiest way for you to install the future updates is to simply delete your model directory and repeat the above step, installing from scratch. When the model updates, also be sure to check the documentation below to see if anything has changed from the previous version.
+Inevitably, I will make improvements to the model; adding new plot types, speeding up data ingest and processing, etc. The easiest way for you to install the future updates is to simply delete your model directory and repeat the above step, installing from scratch (you do not need to set up conda each update). When the model updates, also be sure to check the documentation below to see if anything has changed from the previous version.
 
 ### Configuring the model
 Open the folder that you just installed. Within that directory, there is a file called ```model_config.txt```. This is the only file you’ll ever need to edit to change the configuration of the model. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
@@ -130,7 +130,7 @@ When running the model, it will only plot points that are within the selected do
 ### Running the model
 If you’ve made it this far, congratulations! You’ve made it past the hardest part. Now for the fun part: running the model.
 
-Open up a new terminal window and activate your conda environment:
+Open up a new terminal window and activate your conda environment. You'll have to do this each time you open a new terminal window to run the model:
 
 - ```conda activate myenv```
 
