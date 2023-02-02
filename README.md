@@ -10,24 +10,24 @@ Once that is downloaded and you’ve followed the necessary directions to instal
 
 The first step is to make a new conda environment. An environment is just a place to install packages to and keep them organized. Run the following commands in terminal to create and activate a new environment. You’ll only need to create the environment once but you’ll need to activate it each time you open a new terminal window:
 
-- conda create -n myenv
+- ```conda create -n myenv```
 - ```conda activate myenv```
 
 Run each of the following commands one by one and follow the instructions after each one. It looks like a lot, but I promise it’s fairly easy and fast:
 
 
-conda install -c conda-forge xarray
-conda install -c conda-forge netcdf4
-conda install -c conda-forge cfgrib
-conda install -c conda-forge requests
-conda install -c conda-forge matplotlib
-conda install -c conda-forge cartopy
-conda install -c conda-forge pandas
-conda install -c conda-forge metpy
-conda install -c conda-forge tzwhere
-conda install -c conda-forge python-dateutil
-conda install -c conda-forge imageio
-conda install -c conda-forge adjusttext
+- ```conda install -c conda-forge xarray```
+- ```conda install -c conda-forge netcdf4```
+- ```conda install -c conda-forge cfgrib```
+- ```conda install -c conda-forge requests```
+- ```conda install -c conda-forge matplotlib```
+- ```conda install -c conda-forge cartopy```
+- ```conda install -c conda-forge pandas```
+- ```conda install -c conda-forge metpy```
+- ```conda install -c conda-forge tzwhere```
+- ```conda install -c conda-forge python-dateutil```
+- ```conda install -c conda-forge imageio```
+- ```conda install -c conda-forge adjusttext```
 
 Now we’re all set! Next let’s take a look at how to install and configure my model to run whatever simulations you need to run.
 
