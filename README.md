@@ -71,7 +71,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```wind = True```
 
 ```step```
-- This variable controls the timestep output of the model. This can be an integer from a minimum of 1 to a maximum of 6. For example, if the step is set to 3, the model will compute every third hour. Keep in mind that if you are using Canadian data, the step can only be either 3 or 6.
+- This variable controls the timestep output of the model. This can be an integer from a minimum of 1 to a maximum of 6. For example, if the step is set to 3, the model will compute every third hour. Keep in mind that if you are using Canadian data, the step can only be either 3 or 6. Regardless of if you are using Canadian initialization data, it's recommended to keep the step to either 1, 3, or 6 for the most accurate data.
 - Example: ```step = 3```
 
 ```first_frame```
