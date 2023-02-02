@@ -10,8 +10,8 @@ Once that is downloaded and you’ve followed the necessary directions to instal
 
 The first step is to make a new conda environment. An environment is just a place to install packages to and keep them organized. Run the following commands in terminal to create and activate a new environment. You’ll only need to create the environment once but you’ll need to activate it each time you open a new terminal window:
 
-conda create -n myenv
-conda activate myenv
+- conda create -n myenv
+- ```conda activate myenv```
 
 Run each of the following commands one by one and follow the instructions after each one. It looks like a lot, but I promise it’s fairly easy and fast:
 
