@@ -32,7 +32,7 @@ Run each of the following commands one by one and follow the instructions after 
 Now we’re all set! Next let’s take a look at how to install and configure my model to run whatever simulations you need to run.
 
 ### Initial model setup
-First, download the directory. On this site, click the green button that says "Code". This will open a dropdown menu. There will be two available tabs beneath that, "Local" and "Codespaces"; make sure "Local" is selected. Beneath that, there will be a button titled "Download ZIP". This will save a file likely to your ‘downloads’ directory, but feel free to move it wherever you please. Open the file and unzip it to decompress it and rename it to "model". Note the path to this directory. Here are a few example paths so you know what it might look like:
+First, download the directory. On this site, click the green button that says "Code". This will open a dropdown menu. There will be two available tabs beneath that, "Local" and "Codespaces"; make sure "Local" is selected. Beneath that, there will be a button titled "Download ZIP". This will save a file likely to your "downloads" directory, but feel free to move it wherever you please. Open the file and unzip it to decompress it and rename it to "model". Note the path to this directory. Here are a few example paths so you know what it might look like:
 
 - MacOS: ```/Users/clamalo/documents/model```
 - Windows: ```C:\Users\clamalo\documents\model```
