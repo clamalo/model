@@ -1,0 +1,14 @@
+directory = /Users/clamalo/documents/model/
+ingest = False
+canadian = True
+model_ratio = 0.5
+wind = False
+step = 3
+first_frame = 0
+max_frame = 180
+ingest_type = nomads
+datestr = 20230202
+cycle = 00
+plot_types = total_snow,total_tp,snow
+plot_counties = True
+domain = 52,235,46,245
