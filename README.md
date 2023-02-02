@@ -106,38 +106,37 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180.
 - Example: ```domain = 42,246.5,37,256```
 - Here are a few more preset domains:
--   ```domain = 52,235,35,295``` (entire US)
-domain = 52,235,35,260 (West)
-domain = 42,235,36,245 (California)
-domain = 52,235,46,245 (PNW)
-domain = 42,246.5,37,256 (Utah & Colorado)
-domain = 46,280.5,40,291 (Northeast)
+- ```domain = 52,235,35,295``` (entire US)
+- ```domain = 52,235,35,260``` (West)
+- ```domain = 42,235,36,245``` (California)
+- ```domain = 52,235,46,245``` (PNW)
+- ```domain = 42,246.5,37,256``` (Utah & Colorado)
+- ```domain = 46,280.5,40,291``` (Northeast)
 
 When you’re done changing the parameters of your model run, be sure to save the file!
 
 
-Changing the points
+### Changing the points
 The point forecast plots are completely customizable. In the model directory, there is a file called points.txt. You can open this file the same way you opened model_config.txt. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
 
-The format for a point is name,latitude,longitude,elevation,state/domain/region. Make sure that the longitude is in a -180-180 format; note that this is different from the domain selection. 
+The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format; note that this is different from the domain selection. 
 
 When running the model, it will only plot points that are within the selected domain.
 
 
-Running the model
+### Running the model
 If you’ve made it this far, congratulations! You’ve made it past the hardest part. Now for the fun part: running the model.
 
 Open up a new terminal window and activate your conda environment:
 
-conda activate myenv
+- ```conda activate myenv```
 
 Now, copy the path to your model directory and then use the cd command in the terminal window to navigate to that folder:
 
-cd path_to_directory
-
+- ```cd path_to_directory```
 
 Finally, run the following command and hit enter to run the model:
 
-python3 model.py
+- ```python3 model.py```
 
 From there, the model will begin running and saving the outputs. Inside the model directory that you downloaded, there are two subdirectories: figures and points. Point forecast charts set in the points.html file will go into the points folder and all other charts will be found in the figures folder in their respective subfolders according to variable!
