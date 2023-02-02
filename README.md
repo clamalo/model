@@ -34,14 +34,14 @@ Now we’re all set! Next let’s take a look at how to install and configure my
 Initial model setup
 First, download the directory from this link. By default, it will likely save to your ‘downloads’ directory, but feel free to move it wherever you please. Open the file and unzip it to decompress it. Note the path to this directory. Here are a few example paths so you know what it might look like:
 
-MacOS: /Users/clamalo/documents/model
-Windows: C:\Users\clamalo\documents\model
-Linux: /home/clamalo/documents/model
+- MacOS: /Users/clamalo/documents/model
+- Windows: C:\Users\clamalo\documents\model
+- Linux: /home/clamalo/documents/model
 
 In terms of installing the model, that’s all you need to do! You’re ready to start configuring the model.
 
 
-Configuring the model
+### Configuring the model
 Open the folder that you just installed. Within that directory, there is a file called model_config.txt. This is the only file you’ll ever need to edit to change the configuration of the model. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
 
 Within the file, you’ll see something like this:
