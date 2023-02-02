@@ -1,7 +1,7 @@
-# Model Documentation - updated January 31, 2023
+# Model Documentation - updated February 2, 2023
 
 
-Python and conda installation
+### Python and conda installation
 First thing’s first, you’re going to need to install Python to run the code. Here, we’re using conda which will allow us to easily standardize Python packages across operating systems. 
 
 Head to the miniconda installer and download the correct version for your operating system. Follow the instructions to install conda to your system.
