@@ -446,7 +446,7 @@ for frame in range(first_frame,max_frame+1,step):
         if frame > first_frame:
             canadian_ds['t_avg'] = (canadian_ds['t'] + prior_canadian_ds['t'])/2
             canadian_ds['gh_avg'] = (canadian_ds['gh'] + prior_canadian_ds['gh'])/2
-            if frame == 3:
+            if frame == first_frame+step:
                 canadian_ds['tp'] = canadian_ds['unknown']
             else:
                 canadian_ds['tp'] = (canadian_ds['unknown'] - prior_canadian_ds['unknown'])
