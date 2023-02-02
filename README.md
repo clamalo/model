@@ -42,7 +42,7 @@ In terms of installing the model, that’s all you need to do! You’re ready to
 
 
 ### Configuring the model
-Open the folder that you just installed. Within that directory, there is a file called model_config.txt. This is the only file you’ll ever need to edit to change the configuration of the model. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
+Open the folder that you just installed. Within that directory, there is a file called ```model_config.txt```. This is the only file you’ll ever need to edit to change the configuration of the model. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
 
 Within the file, you’ll see something like this:
 
@@ -117,7 +117,7 @@ When you’re done changing the parameters of your model run, be sure to save th
 
 
 ### Changing the points
-The point forecast plots are completely customizable. In the model directory, there is a file called points.txt. You can open this file the same way you opened model_config.txt. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
+The point forecast plots are completely customizable. In the model directory, there is a file called ```points.txt```. You can open this file the same way you opened ```model_config.txt```. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
 
 The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format; note that this is different from the domain selection. 
 
