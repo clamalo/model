@@ -34,9 +34,9 @@ Now we’re all set! Next let’s take a look at how to install and configure my
 Initial model setup
 First, download the directory from this link. By default, it will likely save to your ‘downloads’ directory, but feel free to move it wherever you please. Open the file and unzip it to decompress it. Note the path to this directory. Here are a few example paths so you know what it might look like:
 
-- MacOS: /Users/clamalo/documents/model
-- Windows: C:\Users\clamalo\documents\model
-- Linux: /home/clamalo/documents/model
+- MacOS: ```/Users/clamalo/documents/model```
+- Windows: ```C:\Users\clamalo\documents\model```
+- Linux: ```/home/clamalo/documents/model```
 
 In terms of installing the model, that’s all you need to do! You’re ready to start configuring the model.
 
@@ -49,13 +49,13 @@ Within the file, you’ll see something like this:
 
 You can change each of these parameters to tweak the model. I’ll go through them one by one and explain what each of them does.
 
-directory
-You’ll have to change this to the path to the model directory. 
-Example: directory = /Users/clamalo/documents/model/
+```directory```
+- You’ll have to change this to the path to the model directory. 
+- Example: ```directory = /Users/clamalo/documents/model/```
 
-ingest 
-This variable controls whether the model runs with new data or old data. This variable can only be set to True or False (capitalization is important!).
-Example: ingest = True
+```ingest ```
+- This variable controls whether the model runs with new data or old data. This variable can only be set to True or False (capitalization is important!).
+- Example: ```ingest = True```
 
 
 
