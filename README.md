@@ -48,8 +48,7 @@ Inevitably, I will make improvements to the model; adding new plot types, speedi
 ### Configuring the model
 Open the folder that you just installed. Within that directory, there is a file called ```model_config.txt```. This is the only file you’ll ever need to edit to change the configuration of the model. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
 
-Within the file, you’ll see something like this:
-
+The file should contain a list of parameters with the parameter name on the left side of an equals sign and the data for the parameter on the right side.
 
 You can change each of these parameters to tweak the model. I’ll go through them one by one and explain what each of them does.
 
