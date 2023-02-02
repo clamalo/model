@@ -106,6 +106,10 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - You can toggle this True or False to control whether county lines are plotted on the charts.
 - Example: ```plot_counties = True```
 
+```plot_points```
+- If this variable is toggled to True, your points will be plotted on the maps as scatter points. If you have a lot of points in the selected domain, it may clutter up the maps.
+- Example: ```plot_points = False```
+
 ```domain```
 - Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180.
 - Example: ```domain = 42,246.5,37,256```
