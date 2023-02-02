@@ -87,7 +87,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```ingest_type = nomads```
 
 ```detect_recent_run```
-- This controls whether the model automatically selects the most recent initialization data to run with to reduce confusion that may arise from having to manually set it (more on this below). This only works for 00 and 12z cycles, so keep in mind that if using American-only data initialization, this will not run with 06 or 18z data even if they are the most recent American data runs. Generally speaking, if you're using any Canadian data, it's a good idea to have this toggled to True.
+- This controls whether the model automatically selects the most recent initialization data to run with to reduce confusion that may arise from having to manually set it (more on this below). Generally speaking, unless your running a special case with older data, it's a good idea to have this toggled to True.
 - Example: ```detect_recent_run```
 
 ```datestr```
