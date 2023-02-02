@@ -356,8 +356,8 @@ if detect_recent_run == True:
 
 init_datetime = datetime.strptime(datestr+cycle,'%Y%m%d%H')
 
-# r = requests.get('https://www.dropbox.com/s/q5n29vow7dz93y0/elevation.nl?dl=1', allow_redirects=True)
-# open(directory+'elevation.nc', 'wb').write(r.content)
+r = requests.get('https://www.dropbox.com/s/q5n29vow7dz93y0/elevation.nl?dl=1', allow_redirects=True)
+open(directory+'elevation.nc', 'wb').write(r.content)
 elevation_ds = xr.open_dataset(directory+'elevation.nc', engine='netcdf4')
 elevation_ds = elevation_ds.sel(longitude=slice(domain[1],domain[3]),latitude=slice(domain[2],domain[0]))
 elevation_ds = elevation_ds.fillna(0)
