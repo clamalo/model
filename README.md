@@ -66,7 +66,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - This variable controls the ratio of American to Canadian initialization data. This number must be between 0 and 1. Obviously, this value only matters if canadian = True. For example, a value of 0.7 here would be 70% American initialization data and 30% Canadian.
 - Example: ```model_ratio = 0.5```
 
-```wind```
+```compute_wind```
 - This variable determines whether you want wind to be simulated or not. Toggling wind to True does increase processing time, since computing wind in complex terrain is computationally expensive. If this variable is toggled to False, the fifth subplot on the point forecast plots will only show temperature (instead of temperature and SLR) and the sixth subplot will be SLR rather than wind.
 - Example: ```wind = True```
 
