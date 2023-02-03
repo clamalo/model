@@ -87,7 +87,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```cycle = 12```
 
 ```plot_types```
-- This is where you can pick what variables you want to plot. Currently, the supported variables are: snow, total_snow, tp (precipitation), total_tp, t2m (temperature), and slr (snow to liquid ratio). If you want to plot more than one parameter, separate them by commas. Stay tuned, as more variables will be added soon. 
+- This is where you can pick what variables you want to plot. Currently, the supported variables are: snow, total_snow, tp (precipitation), total_tp, t2m (temperature), and slr (snow to liquid ratio). If you want to plot more than one parameter, separate them by commas. Stay tuned, as more variables will be added soon. Keep in mind that the more plot types you have, the longer the model will take to run.
 - Example: ```plot_types = snow, total_snow, t2m```
 
 ```plot_counties```
@@ -99,7 +99,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```plot_points = False```
 
 ```domain```
-- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180. As of right now, the maximum supported latitude is 60, minimum latitude is 25, minimum longitude is 235, and maximum longitude is 300.
+- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180. As of right now, the maximum supported latitude is 60, minimum latitude is 25, minimum longitude is 235, and maximum longitude is 300. Keep in mind that the larger the domain, the longer the model will take to process.
 - Example: ```domain = 42,246.5,37,256```
 - Here are a few more preset domains:
 - ```domain = 52,235,35,295``` (entire US)
