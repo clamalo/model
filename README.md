@@ -13,20 +13,9 @@ The first step is to make a new conda environment. An environment is just a plac
 - ```conda create -n myenv```
 - ```conda activate myenv```
 
-Run each of the following commands one by one and follow the instructions after each one. It looks like a lot, but I promise it’s fairly easy and fast:
+Run the following command to install all the packages that the model needs to run:
 
-- ```conda install -c conda-forge xarray```
-- ```conda install -c conda-forge netcdf4```
-- ```conda install -c conda-forge cfgrib```
-- ```conda install -c conda-forge requests```
-- ```conda install -c conda-forge matplotlib```
-- ```conda install -c conda-forge cartopy```
-- ```conda install -c conda-forge pandas```
-- ```conda install -c conda-forge metpy```
-- ```conda install -c conda-forge tzwhere```
-- ```conda install -c conda-forge python-dateutil```
-- ```conda install -c conda-forge imageio```
-- ```conda install -c conda-forge adjusttext```
+- ```conda install -c conda-forge xarray netcdf4 cfgrib requests matplotlib cartopy pandas metpy tzwhere python-dateutil imageio adjusttext```
 
 Now we’re all set! Next let’s take a look at how to install and configure my model to run whatever simulations you need to run.
 
