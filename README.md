@@ -6,7 +6,7 @@ First thing’s first, you’re going to need to install Python to run the code.
 
 Head to the miniconda installer and download the correct version for your operating system. Follow the instructions to install conda to your system.
 
-Once that is downloaded and you’ve followed the necessary directions to install miniconda, open terminal. Next to your name, you should see (base). If that’s not the case, shoot me a message and I will be happy to help you troubleshoot.
+Once that is downloaded and you’ve followed the necessary directions to install miniconda, open terminal.
 
 The first step is to make a new conda environment. An environment is just a place to install packages to and keep them organized. Run the following commands in terminal to create and activate a new environment. You’ll only need to create the environment once but you’ll need to activate it each time you open a new terminal window:
 
@@ -14,7 +14,6 @@ The first step is to make a new conda environment. An environment is just a plac
 - ```conda activate myenv```
 
 Run each of the following commands one by one and follow the instructions after each one. It looks like a lot, but I promise it’s fairly easy and fast:
-
 
 - ```conda install -c conda-forge xarray```
 - ```conda install -c conda-forge netcdf4```
