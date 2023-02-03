@@ -1,4 +1,4 @@
-# Model Documentation - updated February 2, 2023
+# Model Documentation - updated February 3, 2023
 
 
 ### Python and conda installation
@@ -50,9 +50,9 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - The model is configured to run with either American-only initialization data or a blend of American and Canadian initialization data. With this variable, you get to decide whether the initialization data is 50/50 American/Canadian (True) or 100% American (False). Using a blended approach is typically better but it depends on the situation.
 - Example: ```canadian = True```
 
-```model_ratio```
-- This variable controls the ratio of American to Canadian initialization data. This number must be between 0 and 1. Obviously, this value only matters if canadian = True. For example, a value of 0.7 here would be 70% American initialization data and 30% Canadian.
-- Example: ```model_ratio = 0.5```
+```american_data_percentage```
+- This variable controls the ratio of American to Canadian initialization data. This number must be between 0 and 1. Obviously, this value only matters if canadian = True. For example, a value of 0.7 here would be 70% American initialization data and 30% Canadian. 0 is all Canadian, 1 is all American.
+- Example: ```american_data_percentage = 0.5```
 
 ```compute_wind```
 - This variable determines whether you want wind to be simulated or not. Toggling wind to True does increase processing time, since computing wind in complex terrain is computationally expensive. If this variable is toggled to False, the fifth subplot on the point forecast plots will only show temperature (instead of temperature and SLR) and the sixth subplot will be SLR rather than wind.
