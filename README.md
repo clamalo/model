@@ -99,7 +99,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```plot_points = False```
 
 ```domain```
-- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180.
+- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180. As of right now, the maximum supported latitude is 60, minimum latitude is 25, minimum longitude is 235, and maximum longitude is 300.
 - Example: ```domain = 42,246.5,37,256```
 - Here are a few more preset domains:
 - ```domain = 52,235,35,295``` (entire US)
