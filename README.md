@@ -13,7 +13,7 @@ The first step is to make a new conda environment. An environment is just a plac
 - ```conda create -n myenv```
 - ```conda activate myenv```
 
-Run the following command to install all the packages that the model needs to run:
+Run the following command in terminal to install all the packages that the model needs to run:
 
 - ```conda install -c conda-forge xarray netcdf4 cfgrib requests matplotlib cartopy pandas metpy tzwhere python-dateutil imageio adjusttext```
 
