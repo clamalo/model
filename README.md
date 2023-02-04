@@ -15,7 +15,7 @@ The first step is to make a new conda environment. An environment is just a plac
 
 Run the following command in terminal to install all the packages that the model needs to run:
 
-- ```conda install -c conda-forge xarray netcdf4 cfgrib requests matplotlib cartopy pandas metpy tzwhere python-dateutil imageio adjusttext```
+- ```conda install -c conda-forge xarray netcdf4 cfgrib requests matplotlib cartopy pandas metpy timezonefinder python-dateutil imageio adjusttext```
 
 Now we’re all set! Next let’s take a look at how to install and configure my model to run whatever simulations you need to run.
 
