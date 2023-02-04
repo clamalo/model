@@ -70,13 +70,13 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - This variable controls the maximum hour that the model runs to. For example, a max_frame value of 120 would be a 5 day forecast. If the step variable is set to be less than 3, the maximum frame must be 120 or less. With other step values, the longest supported maximum frame is 240. If running without the Canadian data, the longest supported maximum frame is 384.
 - Example: ```max_frame = 120```
 
-```ingest_type```
-- This controls the source of the american data, either from the NOAA’s NOMADS service or their cloud data partnership with AWS. It’s best to have this set to nomads, but if you are rate limited by NOAA, you can change this variable to aws.
-- Example: ```ingest_type = nomads```
+```ingest_source```
+- This controls the source of the American data, either from the NOAA’s NOMADS service or their cloud data partnership with AWS. It’s best to have this set to nomads, but if you are rate limited by NOAA, you can change this variable to aws.
+- Example: ```ingest_source = nomads```
 
 ```detect_recent_run```
 - This controls whether the model automatically selects the most recent initialization data to run with to reduce confusion that may arise from having to manually set it (more on this below). Generally speaking, unless your running a special case with older data, it's a good idea to have this toggled to True.
-- Example: ```detect_recent_run```
+- Example: ```detect_recent_run = True```
 
 ```datestr```
 - This variable controls the date that the initialization data is pulled from. The file nomenclature is as follows: YYYYMMDD. If ```detect_recent_run```is toggled to True, this variable doesn't matter.
