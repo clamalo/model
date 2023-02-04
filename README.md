@@ -22,9 +22,9 @@ Now we’re all set! Next let’s take a look at how to install and configure my
 ### Initial model setup
 First, download the directory. On this site, click the green button that says "Code". This will open a dropdown menu. There will be two available tabs beneath that, "Local" and "Codespaces"; make sure "Local" is selected. Beneath that, there will be a button titled "Download ZIP". This will save a file likely to your "downloads" directory, but feel free to move it wherever you please. Open the file and unzip it to decompress it and rename it to "model". Note the path to this directory. Here are a few example paths so you know what it might look like:
 
-- MacOS: ```/Users/clamalo/documents/model```
-- Windows: ```C:\Users\clamalo\documents\model```
-- Linux: ```/home/clamalo/documents/model```
+- MacOS: ```/Users/clamalo/documents/model/```
+- Windows: ```C:\Users\clamalo\documents\model\```
+- Linux: ```/home/clamalo/documents/model/```
 
 In terms of installing the model, that’s all you need to do! You’re ready to start configuring the model.
 
@@ -39,7 +39,7 @@ The file should contain a list of parameters with the parameter name on the left
 You can change each of these parameters to tweak the model. I’ll go through them one by one and explain what each of them does.
 
 ```directory```
-- You’ll have to change this to the path to the model directory. 
+- You’ll have to change this to the path to the model directory. Be sure to include a slash matching the formatting of the rest of the slashes in the path at the end:
 - Example: ```directory = /Users/clamalo/documents/model/```
 
 ```ingest ```
