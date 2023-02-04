@@ -51,7 +51,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```canadian = True```
 
 ```american_data_percentage```
-- This variable controls the ratio of American to Canadian initialization data. This number must be between 0 and 1. Obviously, this value only matters if canadian = True. For example, a value of 0.7 here would be 70% American initialization data and 30% Canadian. 0 is all Canadian, 1 is all American.
+- This variable controls the ratio of American to Canadian initialization data. This number must be between 0 and 1 (inclusive). Obviously, this value only matters if canadian = True. For example, a value of 0.7 here would be 70% American initialization data and 30% Canadian. 0 is all Canadian, 1 is all American.
 - Example: ```american_data_percentage = 0.5```
 
 ```compute_wind```
