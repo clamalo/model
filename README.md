@@ -42,7 +42,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - You’ll have to change this to the path to the model directory. Be sure to include a slash matching the formatting of the rest of the slashes in the path at the end:
 - Example: ```directory = /Users/clamalo/documents/model/```
 
-```ingest ```
+```ingest```
 - This variable controls whether the model runs with new data or old data. This variable can only be set to True or False (capitalization is important!).
 - Example: ```ingest = True```
 
@@ -87,8 +87,12 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```cycle = 12```
 
 ```plot_types```
-- This is where you can pick what variables you want to plot. Currently, the supported variables are: snow, total_snow, tp (precipitation), total_tp, t2m (temperature), and slr (snow to liquid ratio). If you want to plot more than one parameter, separate them by commas. Stay tuned, as more variables will be added soon. Keep in mind that the more plot types you have, the longer the model will take to run.
+- This is where you can pick what variables you want to plot. Currently, the supported variables are: snow, total_snow, tp (precipitation), total_tp, t2m (temperature), slr (snow to liquid ratio), wind, and ptype (precipitation type). If you want to plot more than one parameter, separate them by commas. Stay tuned, as more variables will be added soon. Keep in mind that the more plot types you have, the longer the model will take to run.
 - Example: ```plot_types = snow, total_snow, t2m```
+
+```plot_states```
+- You can toggle this True or False to control whether state lines are plotted on the charts.
+- Example: ```plot_counties = True```
 
 ```plot_counties```
 - You can toggle this True or False to control whether county lines are plotted on the charts.
@@ -99,15 +103,15 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```plot_points = False```
 
 ```domain```
-- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in 0-360 degree longitude format, not -180-180. As of right now, the maximum supported latitude is 60, minimum latitude is 25, minimum longitude is 235, and maximum longitude is 300. Keep in mind that the larger the domain, the longer the model will take to process.
+- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in a -180-180 format, not 0-360. The model can now process any domain north of -60 degrees latitude. Domains cannot cross the antimeridian (where 180 turns to -180 in the Pacific). Keep in mind that the larger the domain, the longer the model will take to process.
 - Example: ```domain = 42,246.5,37,256```
 - Here are a few more preset domains:
-- ```domain = 52,235,35,295``` (entire US)
-- ```domain = 52,235,35,260``` (West)
-- ```domain = 42,235,36,245``` (California)
-- ```domain = 52,235,46,245``` (PNW)
-- ```domain = 42,246.5,37,256``` (Utah & Colorado)
-- ```domain = 46,280.5,40,291``` (Northeast)
+- ```domain = 52,-125,35,-65``` (entire US)
+- ```domain = 52,-125,35,-100``` (West)
+- ```domain = 42,-125,36,-115``` (California)
+- ```domain = 52,-125,46,-115``` (PNW)
+- ```domain = 42,-113.5,37,-104``` (Utah & Colorado)
+- ```domain = 46,-80.5,40,-69``` (Northeast)
 
 When you’re done changing the parameters of your model run, be sure to save the file!
 
@@ -115,7 +119,7 @@ When you’re done changing the parameters of your model run, be sure to save th
 ### Changing the points
 The point forecast plots are completely customizable. In the model directory, there is a file called ```points.txt```. You can open this file the same way you opened ```model_config.txt```. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
 
-The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format; note that this is different from the domain selection. 
+The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format.
 
 When running the model, it will only plot points that are within the selected domain.
 
