@@ -1,0 +1,17 @@
+directory = /Users/clamalo/documents/model/
+ingest = False
+canadian = True
+american_data_percentage = 0.5
+compute_wind = False
+step = 3
+first_frame = 0
+max_frame = 180
+ingest_source = nomads
+detect_recent_run = True
+datestr = 20230201
+cycle = 00
+plot_types = total_snow
+plot_states = True
+plot_counties = False
+plot_points = False
+domain = 60,-140,54,-130
