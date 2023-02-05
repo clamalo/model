@@ -104,7 +104,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 
 ```domain```
 - Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in a -180-180 format, not 0-360. The model can now process any domain in the world north of -60 degrees latitude. Domains cannot cross the antimeridian (where 180 turns to -180 in the Pacific). Keep in mind that the larger the domain, the longer the model will take to process. A good place to get coordinates is https://caltopo.com/map.html.
-- Example: ```domain = 42,246.5,37,256```
+- Example: ```domain = 52,-125,46,-115```
 - Here are a few more preset domains:
 - ```domain = 52,-125,35,-65``` (entire US)
 - ```domain = 52,-125,35,-100``` (West)
