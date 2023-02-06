@@ -1,4 +1,4 @@
-# Model Documentation - updated February 4, 2023
+# Model Documentation - updated February 6, 2023
 
 
 ### Python and conda installation
@@ -109,7 +109,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - ```domain = 52,-125,35,-65``` (entire US)
 - ```domain = 52,-125,35,-100``` (West)
 - ```domain = 42,-125,36,-115``` (California)
-- ```domain = 52,-125,46,-115``` (PNW)
+- ```domain = 51,-125,45,-115``` (PNW)
 - ```domain = 42,-113.5,37,-104``` (Utah & Colorado)
 - ```domain = 46,-80.5,40,-69``` (Northeast)
 
