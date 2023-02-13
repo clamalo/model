@@ -1,4 +1,4 @@
-# Model Documentation - updated February 6, 2023
+# Model Documentation - updated February 13, 2023
 
 
 ### Python and conda installation
@@ -91,7 +91,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```plot_types = snow, total_snow, t2m```
 
 ```plot_states```
-- You can toggle this True or False to control whether state lines are plotted on the charts.
+- You can toggle this True or False to control whether state and province lines are plotted on the charts.
 - Example: ```plot_counties = True```
 
 ```plot_counties```
