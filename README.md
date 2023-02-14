@@ -1,4 +1,4 @@
-# Model Documentation - updated February 13, 2023
+# Model Documentation - updated February 14, 2023
 
 
 ### Python and conda installation
@@ -144,4 +144,4 @@ Finally, run the following command and hit enter to run the model:
 From there, the model will begin running and saving the outputs in the subdirectories in the ```outputs``` directory. Point forecast charts are plotted every 24 forecast hours and at the end of the run. These are saved in the ```points``` folder within ```outputs```. Charts are generated at every forecast step and are saved in the ```figures``` folder. The day/night snowfall scatter plots are generated at the end of the model run and are saved in the ```scatters``` directory. GIF outputs are generated at the end of the model run and are saved in the ```gifs``` folder.
 
 ### Custom GIF generation
-You can also now generate custom GIFs by running the ```gif-maker.py``` script. This script will ask for the start frame, end frame, step, and parameter to plot. Note that the images must have already been plotted by a prior model run for this script to work. The output GIF will save as ```custom.gif``` in the ```gifs``` subdirectory of the ```outputs``` directory.
+You can also now generate custom GIFs by running the ```gif-maker.py``` script the same way you ran ```model.py```. This script will ask for the start frame, end frame, step, and parameter to plot. Note that the images must have already been plotted by a prior model run for this script to work. The output GIF will save as ```custom.gif``` in the ```gifs``` subdirectory of the ```outputs``` directory.
