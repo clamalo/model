@@ -324,7 +324,7 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
             names.append(name)
 
     for name in names:
-        df = pd.read_csv(directory+'files/gribs/csvs/'+name+'.csv')
+        df = pd.read_csv(directory+'files/csvs/'+name+'.csv')
 
         for row in range(len(df)):
             valid_time = df['valid_time'][row]
@@ -381,7 +381,7 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
 
         empty_df['valid_time'][row] = label
 
-    empty_df.to_csv(directory+'files/gribs/csvs/empty.csv')
+    empty_df.to_csv(directory+'files/csvs/empty.csv')
 
     valid_times = empty_df['valid_time'].unique()
     for valid_time in valid_times:
