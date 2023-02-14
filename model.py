@@ -580,6 +580,12 @@ elevation_ds = elevation_ds.fillna(0)
 # elevation_ds = elevation_ds.coarsen(latitude=5,longitude=5, boundary='trim').mean()
 
 # create subdirectories if they don't exist
+sub_directory = directory+'outputs/'
+if not os.path.exists(sub_directory):
+    os.makedirs(sub_directory)
+sub_directory = directory+'files/'
+if not os.path.exists(sub_directory):
+    os.makedirs(sub_directory)
 sub_directory = directory+'outputs/figures/'
 if not os.path.exists(sub_directory):
     os.makedirs(sub_directory)
