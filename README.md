@@ -32,7 +32,7 @@ In terms of installing the model, that’s all you need to do! You’re ready to
 Inevitably, I will make improvements to the model; adding new plot types, speeding up data ingest and processing, etc. You can check the model update log at https://clamalo.github.io/model/model_update_log.html. The easiest way for you to install the future updates is to simply delete your model directory and repeat the above step, installing the model directory from scratch (you do not need to set up conda each update). When the model updates, also be sure to check the documentation below to see if anything has changed from the previous version. If you'd like to be automatically notified when I implement a major model upgrade (not just minor bug fixes), fill out the following form with your email: https://forms.gle/xsa8vzTUWvcoPE7p8.
 
 ### Configuring the model
-Open the folder that you just installed. Within that directory, there is a file called ```model_config.txt```. This is the only file you’ll ever need to edit to change the configuration of the model. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
+Open the folder that you just installed. Within that directory, there is a file called ```model_config.txt```. Open the file in a text editor (most operating systems will do this for you automatically if you double click on the file).
 
 The file should contain a list of parameters with the parameter name on the left side of an equals sign and the data for the parameter on the right side.
 
@@ -47,7 +47,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```ingest = True```
 
 ```canadian```
-- The model is configured to run with either American-only initialization data or a blend of American and Canadian initialization data. With this variable, you get to decide whether the initialization data is 50/50 American/Canadian (True) or 100% American (False). Using a blended approach is typically better but it depends on the situation.
+- The model is configured to run with either American-only initialization data or a blend of American and Canadian initialization data. With this variable, you get to decide whether the initialization data is a mix of American and Canadian data (True) or 100% American (False). Using a blended approach is typically better, but it depends on the situation.
 - Example: ```canadian = True```
 
 ```american_data_percentage```
@@ -71,7 +71,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```max_frame = 120```
 
 ```ingest_source```
-- This controls the source of the American data, either from the NOAA’s NOMADS service or their cloud data partnership with AWS. It’s best to have this set to nomads, but if you are rate limited by NOAA, you can change this variable to aws.
+- This controls the source of the American data, either from the NOAA’s NOMADS service or their cloud data partnership with AWS. It’s best to have this set to nomads as it's considerably faster, but if you are rate limited by NOAA, you can change this variable to aws.
 - Example: ```ingest_source = nomads```
 
 ```detect_recent_run```
@@ -103,15 +103,13 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```plot_points = False```
 
 ```domain```
-- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in a -180-180 format, not 0-360. The model can now process any domain in the world north of -60 degrees latitude. Domains cannot cross the antimeridian (where 180 turns to -180 in the Pacific). Keep in mind that the larger the domain, the longer the model will take to process. A good place to get coordinates is https://caltopo.com/map.html.
+- Now, perhaps the most important variable of all. This variable controls what area is computed by the model. The format is top latitude, west longitude, bottom latitude, east longitude. The longitudes must be in a -180-180 format, not 0-360. The model can now process any domain in the world north of -60 degrees latitude. Domains cannot cross the antimeridian (where 180 turns to -180 in the Pacific). Keep in mind that the larger the domain, the longer the model will take to process. A good place to get coordinates is https://caltopo.com/map.html. The model can now save domains as strings (see ```Saving domains``` below).
 - Example: ```domain = 52,-125,46,-115```
-- Here are a few more preset domains:
-- ```domain = 52,-125,35,-65``` (entire US)
-- ```domain = 52,-125,35,-100``` (West)
-- ```domain = 42,-125,36,-115``` (California)
-- ```domain = 51,-125,45,-115``` (PNW)
-- ```domain = 42,-113.5,37,-104``` (Utah & Colorado)
-- ```domain = 46,-80.5,40,-69``` (Northeast)
+- Example 2: ```domain = West``` (the West domain is defined in ```domains.txt```)
+
+```day_night_scatters_only```
+- This variable controls whether the model only plots the day/night snowfall total scatter plots for your points for your domain. Typically, this should be set to False. However, if you've already run the model cycle and want to check out some other domain scatter plots, you can change the ```domain``` variable and run the script with this parameter set as True.
+- Example: ```day_night_scatters_only = False```
 
 When you’re done changing the parameters of your model run, be sure to save the file!
 
@@ -121,7 +119,11 @@ The point forecast plots are completely customizable. In the model directory, th
 
 The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format.
 
-When running the model, it will only plot points that are within the selected domain.
+When running the model, it will only plot points that are within the selected domain (automatically detected based on the latitude and longitude).
+
+
+### Saving domains
+You can save frequented domains in the ```domains.txt``` file. To do so, open the file and follow the same top latitude, west longitude, bottom latitude, east longitude format as before. Inside the file, you’ll find several of my presaved domains. Feel free to use this list, add to it, or create your own. The domains in this file are referenced by the ```domain``` parameter if a string domain is set in ```model_config.txt```.
 
 
 ### Running the model
@@ -139,4 +141,7 @@ Finally, run the following command and hit enter to run the model:
 
 - ```python3 model.py```
 
-From there, the model will begin running and saving the outputs. Inside the model directory that you downloaded, there are two subdirectories: figures and points. Point forecast charts set in the points.html file will go into the points folder and all other charts will be found in the figures folder in their respective subfolders according to variable!
+From there, the model will begin running and saving the outputs in the subdirectories in the ```outputs``` directory. Point forecast charts are plotted every 24 forecast hours and at the end of the run. These are saved in the ```points``` folder within ```outputs```. Charts are generated at every forecast step and are saved in the ```figures``` folder. The day/night snowfall scatter plots are generated at the end of the model run and are saved in the ```scatters``` directory. GIF outputs are generated at the end of the model run and are saved in the ```gifs``` folder.
+
+### Custom GIF generation
+You can also now generate custom GIFs by running the ```gif-maker.py``` script. This script will ask for the start frame, end frame, step, and parameter to plot. Note that the images must have already been plotted by a prior model run for this script to work. The output GIF will save as ```custom.gif``` in the ```gifs``` subdirectory of the ```outputs``` directory.
