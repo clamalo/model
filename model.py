@@ -439,6 +439,12 @@ with open('model_config.txt', 'r') as myfile:
         config = config.replace(' ','')
         text[arg] = config
     directory = text[0]
+
+    if os.name == 'nt':
+        clear_prompt = 'cls'
+    else:
+        clear_prompt = 'clear'
+
     if text[1] == 'True':
         ingest = True
     else:
@@ -612,7 +618,7 @@ for frame in range(first_frame,max_frame+1,step):
 
     start = time.time()
 
-    os.system('clear')
+    os.system(clear_prompt)
     if frame >= first_frame+(2*step):
         average_time = sum(times)/len(times)
         time_remaining = str(int(average_time*((max_frame-frame)/step)/60))
@@ -1101,5 +1107,5 @@ for frame in range(first_frame,max_frame+1,step):
 
 day_night_scatters(points,domain,plot_states,plot_counties)
 
-os.system('clear')
+os.system(clear_prompt)
 print('Done with model run: '+datestr+cycle+'z')
