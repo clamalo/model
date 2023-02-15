@@ -233,8 +233,8 @@ def download_canadian_file(frame,compute_wind):
         for variable in variables:
             canadian_urls.append(f'https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/{cycle}/{name_frame(frame)}/CMC_glb_{variable}_ISBL_{level}_latlon.15x.15_{datestr+cycle}_P{name_frame(frame)}.grib2')
 
-    if os.path.exists(directory+'gribs' + '/' + name_frame(frame) + '/gdps_init.grib2'):
-        os.remove(directory+'gribs' + '/' + name_frame(frame) + '/gdps_init.grib2')
+    if os.path.exists(directory+'files/gribs/' + name_frame(frame) + '/gdps_init.grib2'):
+        os.remove(directory+'files/gribs/' + name_frame(frame) + '/gdps_init.grib2')
 
     for url in canadian_urls:
         if 'APCP' in url:
@@ -322,6 +322,10 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
             continue
         else:
             names.append(name)
+
+    if len(names) == 0:
+        print('No points in domain')
+        return
 
     for name in names:
         df = pd.read_csv(directory+'files/csvs/'+name+'.csv')
@@ -427,6 +431,7 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
         save_label = valid_time.replace('/','-').replace(' ','_')
         save_label = save_label.split('(')[0]+save_label.split(')')[1]
         save_label = save_label.replace('_','')
+        save_label = save_label.split('-')[1]+'-'+save_label.split('-')[2]+'-'+save_label.split('-')[0]
         plt.savefig(directory+'outputs/scatters/'+save_label+'.png',bbox_inches='tight',dpi=300)
 
     
@@ -830,37 +835,37 @@ for frame in range(first_frame,max_frame+1,step):
             # bounds = [0,1,2,4,6,8,10,12,15,18,21,24,27,30,33,36,42,48]
             bounds = [0,1,2,3,4,6,8,12,18,24,30,36,48,60,72,96]
             # tick_labels = ['0','1','2','4','6','8','10','12','15','18','21','24','27','30','33','36','42','48']
-            tick_labels = ['0', '1', '2', '3', '4', '6', '8', '12', '18', '24', '30', '36', '48', '60', '72', '96']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = 'Total Snowfall (in)','"'
         elif plot_type == 'total_tp':
             colormap = weatherbell_precip_colormap()
             bounds = [0,0.01,0.03,0.05,0.075,0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.2,1.4,1.6,1.8,2,2.5,3,3.5,4,5,6,7,8,9,10]#,11,12,13,14,15,16,17,18,19,20])
-            tick_labels = ['0.01', '0.05', '0.1', '0.2', '0.3', '0.5', '0.7', '0.9', '1.2', '1.6', '2', '3', '4', '6', '8', '10']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = 'Total Precipitation (in)','"'
         elif plot_type == 'snow':
             colormap = hourly_snow_colormap()
             bounds = [0,0.1,0.5,0.75,1,1.5,2,2.5,3,3.5,4]
-            tick_labels = ['0','0.1','0.5','0.75','1','1.5','2','2.5','3','3.5','4']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = str(step)+' Hour Snowfall (in)','"'
         elif plot_type == 'tp':
             colormap = hourly_precip_colormap()
             bounds = [0,0.01,0.03,0.05,0.075,0.1,0.15,0.2,0.25,0.3,0.4,0.5]
-            tick_labels = ['0','0.01','0.03','0.05','0.075','0.1','0.15','0.2','0.25','0.3','0.4','0.5']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = str(step)+' Hour Precipitation (in)','"'
         elif plot_type == 't2m':
             colormap = temp_colormap()
             bounds = [-100,-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110]
-            tick_labels = ['-30','-20','-10','0','10','20','30','40','50','60','70','80','90','100']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = 'Temperature (F)','F'
         elif plot_type == 'slr':
             colormap = slr_colormap()
             bounds = [0,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-            tick_labels = ['0','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = 'SLR',''
         elif plot_type == 'wind':
             colormap = wind_colormap()
             bounds = [0,10,20,30,40,50,60,70,80]
-            tick_labels = ['0','10','20','30','40','50','60','70','80']
+            tick_labels = [str(x) for x in bounds]
             plot_label,units = 'Wind Speed (mph)','mph'
         elif plot_type == 'ptype':
             colormap = ptype_colormap()
@@ -926,7 +931,7 @@ for frame in range(first_frame,max_frame+1,step):
     times.append(time.time()-start)
 
     # if the frame is not the max frame and not a multiple of 24, skip it
-    if frame != max_frame and frame%24 != 0:
+    if frame != max_frame and frame%(step*8) != 0:
         continue
 
     print('Plotting point forecasts...')
@@ -1094,16 +1099,16 @@ for frame in range(first_frame,max_frame+1,step):
         plt.suptitle("Point Forecast: "+name+" (Grid Elevation: "+str(round(df['elevation'][0]))+"') - Init: "+init_label, fontsize=20)
         plt.savefig(directory+'outputs/points/'+name+'.png')
     
-    print('Generating GIFs...')
-    # on the last frame, make the output images into gifs
-    if frame == max_frame:
-        for plot_type in plot_types:
-            if plot_type == '':
-                continue
-            images = []
-            for frame_number in range(step,max_frame+1,step):
-                images.append(imageio.imread('outputs/figures/'+plot_type+'/'+plot_type+'_'+str(frame_number)+'.png'))
-            imageio.mimsave(directory+'outputs/gifs/'+plot_type+'.gif', images, duration=0.2)
+    # print('Generating GIFs...')
+    # # on the last frame, make the output images into gifs
+    # if frame == max_frame:
+    #     for plot_type in plot_types:
+    #         if plot_type == '':
+    #             continue
+    #         images = []
+    #         for frame_number in range(step,max_frame+1,step):
+    #             images.append(imageio.imread('outputs/figures/'+plot_type+'/'+plot_type+'_'+str(frame_number)+'.png'))
+    #         imageio.mimsave(directory+'outputs/gifs/'+plot_type+'.gif', images, duration=0.2)
 
 day_night_scatters(points,domain,plot_states,plot_counties)
 
