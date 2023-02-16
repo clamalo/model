@@ -1,4 +1,4 @@
-# Model Documentation - updated February 14, 2023
+# Model Documentation - updated February 16, 2023
 
 
 ### Python and conda installation
@@ -63,7 +63,7 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```step = 3```
 
 ```first_frame```
-- This variable controls the initial frame that the model starts at. It’s best to have this at 0.
+- This variable controls the initial frame that the model starts at. It’s best to have this at 0, but this number can be any multiple of 6.
 - Example: ```first_frame = 0```
 
 ```max_frame```
