@@ -141,6 +141,9 @@ Finally, run the following command and hit enter to run the model:
 
 - ```python3 model.py```
 
+If you're getting any ```ModuleNotFoundError```s, try running this instead:
+- ```python model.py```
+
 From there, the model will begin running and saving the outputs in the subdirectories in the ```outputs``` directory. Point forecast charts are plotted every 24 forecast hours and at the end of the run. These are saved in the ```points``` folder within ```outputs```. Charts are generated at every forecast step and are saved in the ```figures``` folder. The day/night snowfall scatter plots are generated at the end of the model run and are saved in the ```scatters``` directory. GIF outputs are generated at the end of the model run and are saved in the ```gifs``` folder.
 
 ### Custom GIF generation
