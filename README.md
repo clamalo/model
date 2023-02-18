@@ -1,4 +1,4 @@
-# Model Documentation - updated February 16, 2023
+# Model Documentation - updated February 17, 2023
 
 
 ### Python and conda installation
@@ -117,13 +117,13 @@ When you’re done changing the parameters of your model run, be sure to save th
 ### Changing the points
 The point forecast plots are completely customizable. In the model directory, there is a file called ```points.txt```. You can open this file the same way you opened ```model_config.txt```. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
 
-The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format.
+The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format. Be sure that there are no extra/empty lines in the file.
 
 When running the model, it will only plot points that are within the selected domain (automatically detected based on the latitude and longitude).
 
 
 ### Saving domains
-You can save frequented domains in the ```domains.txt``` file. To do so, open the file and follow the same top latitude, west longitude, bottom latitude, east longitude format as before. Inside the file, you’ll find several of my presaved domains. Feel free to use this list, add to it, or create your own. The domains in this file are referenced by the ```domain``` parameter if a string domain is set in ```model_config.txt```.
+You can save frequented domains in the ```domains.txt``` file. To do so, open the file and follow the same top latitude, west longitude, bottom latitude, east longitude format as before. Inside the file, you’ll find several of my presaved domains. Feel free to use this list, add to it, or create your own. Be sure that there are no extra/empty lines in the file. The domains in this file are referenced by the ```domain``` parameter if a string domain is set in ```model_config.txt```. 
 
 
 ### Running the model
