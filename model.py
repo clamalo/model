@@ -60,6 +60,7 @@ def get_datestr_and_cycle(canadian):
             datestr = previous_day.strftime("%Y%m%d")
     return datestr, cycle
 
+
 # function to make the frame a three digit string
 def name_frame(f):
     if f < 10:
@@ -248,9 +249,9 @@ def download_canadian_file(frame,compute_wind):
 # function to thread the above functions for downloading data
 def ingest_frame(frame,datestr,cycle,ingest_source,canadian,compute_wind):
 
-    if frame%(step*10) == 0:
+    if frame == first_frame or (frame-first_frame)%(step*10) == 0:
         if frame+(step*10) > max_frame:
-            max_ingest_frame = max_frame
+            max_ingest_frame = max_frame+1
         else:
             max_ingest_frame = frame+(step*10)+1
         frames = range(frame,max_ingest_frame,step)
@@ -268,32 +269,35 @@ def ingest_frame(frame,datestr,cycle,ingest_source,canadian,compute_wind):
             if frame != first_frame:
                 last_download_time = os.path.getmtime(directory+'files/gribs/' + name_frame(int(frame)-step) + '/gfs_init' + name_frame(int(frame)-step) + '.grib2')
                 if time.time()-last_download_time < 60:
-                    time.sleep(60-(time.time()-last_download_time))
+                    time.sleep(60+(time.time()-last_download_time))
 
-        threads = [threading.Thread(target=download_25_file, args=(ingest_frame_number,ingest_source,compute_wind)) for ingest_frame_number in frames]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-        if frames[0] == 0:
-            frames = frames[1:]
-        threads = [threading.Thread(target=download_flux_file, args=(ingest_frame_number,ingest_source)) for ingest_frame_number in frames]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
+        #american data ingestion
+        if ingest and not(canadian and american_data_percentage == 0):
+            threads = [threading.Thread(target=download_25_file, args=(ingest_frame_number,ingest_source,compute_wind)) for ingest_frame_number in frames]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+            if frames[0] == 0:
+                frames = frames[1:]
+            threads = [threading.Thread(target=download_flux_file, args=(ingest_frame_number,ingest_source)) for ingest_frame_number in frames]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
 
-    if canadian == True and frame%(step*10) == 0:
-        if frame+(step*10) > max_frame:
-            max_ingest_frame = max_frame
-        else:
-            max_ingest_frame = frame+(step*10)+1
-        frames = range(frame,max_ingest_frame,step)
-        threads = [threading.Thread(target=download_canadian_file, args=(ingest_frame_number,compute_wind)) for ingest_frame_number in frames]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
+        #canadian data ingestion
+        if canadian == True:
+            if frame+(step*10) > max_frame:
+                max_ingest_frame = max_frame+1
+            else:
+                max_ingest_frame = frame+(step*10)+1
+            frames = range(frame,max_ingest_frame,step)
+            threads = [threading.Thread(target=download_canadian_file, args=(ingest_frame_number,compute_wind)) for ingest_frame_number in frames]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
 
 # function to find temperatures at elevations given two isobaric arrays
 def find_temperature(gh1,gh2,parameter_pair,elevation):
@@ -311,6 +315,7 @@ def find_elevation(gh1, gh2, parameter_pair, temperature):
 
 
 def day_night_scatters(points,domain,plot_states,plot_counties):
+    print('Plotting day/night scatters...')
     empty_df = pd.DataFrame(columns=['name','forecast_hour','valid_time','total_snow'])
 
     names = []
@@ -411,14 +416,17 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
             latitude = df['latitude'][resort]
             longitude = df['longitude'][resort]
 
-            texts.append(ax.annotate(name + ' ' + str(total_snow)+'"', (longitude, latitude), xytext=(longitude, latitude), transform=ccrs.PlateCarree(), fontsize=7, color=cmap(np.digitize(total_snow, bounds)-1)))
+            texts.append(ax.annotate(name + ' ' + str(total_snow)+'"', (longitude, latitude), xytext=(longitude, latitude), transform=ccrs.PlateCarree(), fontsize=9, fontweight='bold', color=cmap(np.digitize(total_snow, bounds)-1)))
             plt.plot(longitude,latitude,'o',color=cmap(np.digitize(total_snow, bounds)-1),markersize=3,transform=ccrs.PlateCarree())
 
         norm = colors.BoundaryNorm(bounds, cmap.N)
         cbar = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, orientation='horizontal', pad=0.05, fraction=0.05, ticks=bounds, shrink=0.8)
-        cbar.set_label('Total Snowfall (in)', fontsize=10)
+        cbar.outline.set_edgecolor('white')
+        cbar.set_label('Total Snowfall (in)', fontsize=10, color='white')
+        cbar.ax.tick_params(color='white')
+        cbar.ax.set_xticklabels(['0','1','2','3','4','6','8','12','18','24','30','36','48','60','72','96'], color='white')
 
-        adjust_text(texts, arrowprops=dict(arrowstyle='-', color='white', lw=0.7))
+        adjust_text(texts, arrowprops=dict(arrowstyle='-', color='white', lw=0.7, alpha=0.5))
 
         ax.coastlines()
         ax.add_feature(cfeature.BORDERS, edgecolor='black')
@@ -427,7 +435,7 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
         if plot_counties == True:
             ax.add_feature(USCOUNTIES.with_scale('500k'),linewidth=0.2, edgecolor='black')
 
-        plt.title('Total Snowfall - '+valid_time,fontsize=12)
+        plt.title('Total Snowfall - '+valid_time,fontsize=12,color='white',fontweight='bold')
         save_label = valid_time.replace('/','-').replace(' ','_')
         save_label = save_label.split('(')[0]+save_label.split(')')[1]
         save_label = save_label.replace('_','')
@@ -581,15 +589,6 @@ if detect_recent_run == True:
 # turn the date and cycle into a datetime object
 init_datetime = datetime.strptime(datestr+cycle,'%Y%m%d%H')
 
-# download and open the elevation dataset, crop to desired domain, and coarsen 2x
-if os.path.exists(directory+'files/elevation.nc') == False:
-    r = requests.get('https://www.dropbox.com/s/wholbzwikcyogte/new_elevation.nc?dl=1', allow_redirects=True)
-    open(directory+'files/elevation.nc', 'wb').write(r.content)
-elevation_ds = xr.open_dataset(directory+'files/elevation.nc', engine='netcdf4')
-elevation_ds = elevation_ds.sel(longitude=slice(domain[1],domain[3]),latitude=slice(domain[2],domain[0]))
-elevation_ds = elevation_ds.fillna(0)
-# elevation_ds = elevation_ds.coarsen(latitude=5,longitude=5, boundary='trim').mean()
-
 # create subdirectories if they don't exist
 sub_directory = directory+'outputs/'
 if not os.path.exists(sub_directory):
@@ -615,6 +614,15 @@ if not os.path.exists(sub_directory):
 sub_directory = directory+'outputs/scatters/'
 if not os.path.exists(sub_directory):
     os.makedirs(sub_directory)
+
+# download and open the elevation dataset, crop to desired domain, and coarsen 2x
+if os.path.exists(directory+'files/elevation.nc') == False:
+    r = requests.get('https://www.dropbox.com/s/wholbzwikcyogte/new_elevation.nc?dl=1', allow_redirects=True)
+    open(directory+'files/elevation.nc', 'wb').write(r.content)
+elevation_ds = xr.open_dataset(directory+'files/elevation.nc', engine='netcdf4')
+elevation_ds = elevation_ds.sel(longitude=slice(domain[1],domain[3]),latitude=slice(domain[2],domain[0]))
+elevation_ds = elevation_ds.fillna(0)
+# elevation_ds = elevation_ds.coarsen(latitude=5,longitude=5, boundary='trim').mean()
 
 times = []
 
@@ -710,7 +718,12 @@ for frame in range(first_frame,max_frame+1,step):
             canadian_ds['gh_avg'] = (canadian_ds['gh'] + prior_canadian_ds['gh'])/2
             # compute the frame precipitation
             if frame == first_frame+step:
-                canadian_ds['tp'] = canadian_ds['unknown']
+                if first_frame != 0:
+                    prior_canadian_ds = xr.load_dataset(directory+'files/gribs/' + name_frame(frame-step) + '/gdps_init.grib2', engine='cfgrib')
+                    prior_canadian_ds = prior_canadian_ds.interp(latitude=elevation_ds.latitude,longitude=elevation_ds.longitude)
+                    canadian_ds['tp'] = canadian_ds['unknown']-prior_canadian_ds['unknown']
+                else:
+                    canadian_ds['tp'] = canadian_ds['unknown']
             else:
                 canadian_ds['tp'] = (canadian_ds['unknown'] - prior_canadian_ds['unknown'])
         # copy the dataset to use as the prior dataset for the next frame
@@ -908,12 +921,18 @@ for frame in range(first_frame,max_frame+1,step):
         min_value = round(float(plot_ds[parameter].min().values),1)
         init_label = init_datetime.strftime('%m/%d %Hz')
         valid_label = (init_datetime + timedelta(hours=frame)).strftime('%m/%d %Hz')
-        if plot_type == 't2m':
-            plt.title(plot_label+' || FH'+str(frame)+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units+', Min: '+str(min_value)+units,fontsize=12)
-        elif plot_type == 'ptype':
-            plt.title(plot_label+' || FH'+str(frame)+' || Init: '+init_label+' || Valid: '+valid_label,fontsize=12)
+
+        if first_frame != 0 and plot_type in ['total_tp','total_snow']:
+            forecast_hour_label = 'FH'+str(first_frame)+'-'+str(frame)
         else:
-            plt.title(plot_label+' || FH'+str(frame)+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units,fontsize=12)
+            forecast_hour_label = 'FH'+str(frame)
+
+        if plot_type == 't2m':
+            plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units+', Min: '+str(min_value)+units,fontsize=12)
+        elif plot_type == 'ptype':
+            plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label,fontsize=12)
+        else:
+            plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units,fontsize=12)
             
 
         ax.coastlines()
