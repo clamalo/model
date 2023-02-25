@@ -16,5 +16,5 @@ parameter = input('Parameter: ')
 
 images = []
 for frame_number in range(start_frame,end_frame+1,step):
-    images.append(imageio.imread('figures/'+parameter+'/'+parameter+'_'+str(frame_number)+'.png'))
-imageio.mimsave(directory+'figures/custom.gif', images, duration=0.2)
+    images.append(imageio.imread(directory+'outputs/figures/'+parameter+'/'+parameter+'_'+str(frame_number)+'.png'))
+imageio.mimsave(directory+'outputs/custom.gif', images, duration=0.2)
