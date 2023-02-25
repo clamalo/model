@@ -1,6 +1,5 @@
 # Model Documentation - updated February 17, 2023
 
-
 ### Python and conda installation
 First thing’s first, you’re going to need to install Python to run the code. Here, we’re using conda which will allow us to easily standardize Python packages across operating systems. 
 
@@ -38,10 +37,6 @@ The file should contain a list of parameters with the parameter name on the left
 
 You can change each of these parameters to tweak the model. I’ll go through them one by one and explain what each of them does.
 
-```directory```
-- You’ll have to change this to the path to the model directory. Be sure to include a slash matching the formatting of the rest of the slashes in the path at the end:
-- Example: ```directory = /Users/clamalo/documents/model/```
-
 ```ingest```
 - This variable controls whether the model runs with new data or old data. This variable can only be set to True or False (capitalization is important!).
 - Example: ```ingest = True```
@@ -49,10 +44,6 @@ You can change each of these parameters to tweak the model. I’ll go through th
 ```canadian```
 - The model is configured to run with either American-only initialization data or a blend of American and Canadian initialization data. With this variable, you get to decide whether the initialization data is a mix of American and Canadian data (True) or 100% American (False). Using a blended approach is typically better, but it depends on the situation.
 - Example: ```canadian = True```
-
-```american_data_percentage```
-- This variable controls the ratio of American to Canadian initialization data. This number must be between 0 and 1 (inclusive). Obviously, this value only matters if canadian = True. For example, a value of 0.7 here would be 70% American initialization data and 30% Canadian. 0 is all Canadian, 1 is all American.
-- Example: ```american_data_percentage = 0.5```
 
 ```compute_wind```
 - This variable determines whether you want wind to be simulated or not. Toggling wind to True does increase processing time, since computing wind in complex terrain is computationally expensive. If this variable is toggled to False, the fifth subplot on the point forecast plots will only show temperature (instead of temperature and SLR) and the sixth subplot will be SLR rather than wind.
@@ -70,25 +61,13 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - This variable controls the maximum hour that the model runs to. For example, a max_frame value of 120 would be a 5 day forecast. If the step variable is set to be less than 3, the maximum frame must be 120 or less. With other step values, the longest supported maximum frame is 240. If running without the Canadian data, the longest supported maximum frame is 384.
 - Example: ```max_frame = 120```
 
-```ingest_source```
-- This controls the source of the American data, either from the NOAA’s NOMADS service or their cloud data partnership with AWS. It’s best to have this set to nomads as it's considerably faster, but if you are rate limited by NOAA, you can change this variable to aws.
-- Example: ```ingest_source = nomads```
-
-```detect_recent_run```
-- This controls whether the model automatically selects the most recent initialization data to run with to reduce confusion that may arise from having to manually set it (more on this below). Generally speaking, unless your running a special case with older data, it's a good idea to have this toggled to True.
-- Example: ```detect_recent_run = True```
-
-```datestr```
-- This variable controls the date that the initialization data is pulled from. The file nomenclature is as follows: YYYYMMDD. If ```detect_recent_run```is toggled to True, this variable doesn't matter.
-- Example: ```datestr = 20230131```
-
-```cycle```
-- Similarly, this controls the model cycle that the initialization data is coming from. This is either 00, 06, 12, or 18 (00 or 12 only if using Canadian data). If ```detect_recent_run```is toggled to True, this variable doesn't matter.
-- Example: ```cycle = 12```
+```model_cycle```
+- This variable controls the model cycle that the initialization data is pulled from. Typically, it's best to have this set to "Detect" (capitalization is important!), as that will automatically detect the most recent data. If you want to manually select a model cycle, input the following format: YYYYMMDDHH. Note that if using Canadian data, their data archive only goes back a few cycles.
+- Example: ```model_cycle = Detect```
 
 ```plot_types```
 - This is where you can pick what variables you want to plot. Currently, the supported variables are: snow, total_snow, tp (precipitation), total_tp, t2m (temperature), slr (snow to liquid ratio), wind, and ptype (precipitation type). If you want to plot more than one parameter, separate them by commas. Stay tuned, as more variables will be added soon. Keep in mind that the more plot types you have, the longer the model will take to run.
-- Example: ```plot_types = snow, total_snow, t2m```
+- Example: ```plot_types = snow, total_snow, ptype```
 
 ```plot_states```
 - You can toggle this True or False to control whether state and province lines are plotted on the charts.
@@ -107,24 +86,29 @@ You can change each of these parameters to tweak the model. I’ll go through th
 - Example: ```domain = 52,-125,46,-115```
 - Example 2: ```domain = West``` (the West domain is defined in ```domains.txt```)
 
-```day_night_scatters_only```
-- This variable controls whether the model only plots the day/night snowfall total scatter plots for your points for your domain. Typically, this should be set to False. However, if you've already run the model cycle and want to check out some other domain scatter plots, you can change the ```domain``` variable and run the script with this parameter set as True.
-- Example: ```day_night_scatters_only = False```
+```scatters_only```
+- This variable controls whether the model only plots the daily snowfall total scatter plots for your points for your domain. Typically, this should be set to False. However, if you've already run the model cycle and want to check out some scatter plots for another domain, you can change the ```domain``` variable and run the script with this parameter set as True.
+- Example: ```scatters_only = False```
+
+```day_and_night_scatter_separate```
+- If this variable is set as True, it will plot both day (8am-4pm) and night (4pm-8am) scatter plots. If it is set as False, it will plot the scatters with day and night included (4pm prior day-4pm).
+- Example: ```day_and_night_scatter_separate = False```
+
+```points_tag```
+- You can now tag points with keywords (more on this in the ```Changing points``` section). This variable makes it so that the total scatter plots will only plot points that are only tagged with the desired keyword. If you want all points to be plotted, set this variable as None.
+- Example: ```points_tag = None```
 
 When you’re done changing the parameters of your model run, be sure to save the file!
 
-
-### Changing the points
+### Changing points
 The point forecast plots are completely customizable. In the model directory, there is a file called ```points.txt```. You can open this file the same way you opened ```model_config.txt```. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
 
-The format for a point is ```name,latitude,longitude,elevation,state/domain/region```. Make sure that the longitude is in a -180-180 format. Be sure that there are no extra/empty lines in the file.
+The format for a point is ```name,latitude,longitude,elevation,tag```. Make sure that the longitude is in a -180-180 format. Be sure that there are no extra/empty lines in the file. The major resorts in my ```points.txt``` file are tagged with "Work", meaning if I set the ```points_tag``` variable in ```model_config.txt``` as "Work", it will only plot these points.
 
-When running the model, it will only plot points that are within the selected domain (automatically detected based on the latitude and longitude).
-
+When running the model, it will only plot points that are within the selected domain (automatically detected based on the latitudes and longitudes).
 
 ### Saving domains
 You can save frequented domains in the ```domains.txt``` file. To do so, open the file and follow the same top latitude, west longitude, bottom latitude, east longitude format as before. Inside the file, you’ll find several of my presaved domains. Feel free to use this list, add to it, or create your own. Be sure that there are no extra/empty lines in the file. The domains in this file are referenced by the ```domain``` parameter if a string domain is set in ```model_config.txt```. 
-
 
 ### Running the model
 If you’ve made it this far, congratulations! You’ve made it past the hardest part. Now for the fun part: running the model.
@@ -147,4 +131,4 @@ If you're getting any ```ModuleNotFoundError```s, try running this instead:
 From there, the model will begin running and saving the outputs in the subdirectories in the ```outputs``` directory. Point forecast charts are plotted every 24 forecast hours and at the end of the run. These are saved in the ```points``` folder within ```outputs```. Charts are generated at every forecast step and are saved in the ```figures``` folder. The day/night snowfall scatter plots are generated at the end of the model run and are saved in the ```scatters``` directory. GIF outputs are generated at the end of the model run and are saved in the ```gifs``` folder.
 
 ### Custom GIF generation
-You can also now generate custom GIFs by running the ```gif-maker.py``` script the same way you ran ```model.py```. This script will ask for the start frame, end frame, step, and parameter to plot. Note that the images must have already been plotted by a prior model run for this script to work. The output GIF will save as ```custom.gif``` in the ```gifs``` subdirectory of the ```outputs``` directory.
+You can also now generate custom GIFs by running the ```gif-maker.py``` script the same way you ran ```model.py```. This script will ask for the start frame, end frame, step, and parameter to plot. Note that the images must have already been plotted by a prior model run for this script to work. The output GIF will save as ```custom.gif``` in the ```outputs``` directory.
