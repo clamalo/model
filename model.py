@@ -528,18 +528,18 @@ with open('model_config.txt', 'r') as myfile:
                 quit()
     for i in range(len(domain)):
         domain[i] = float(domain[i])
-    if text[12] == 'None':
-        points_tag = None
-    else:
-        points_tag = text[12]
-    if text[13] == 'True':
+    if text[12] == 'True':
         scatters_only = True
     else:
         scatters_only = False
-    if text[14] == 'True':
+    if text[13] == 'True':
         day_and_night_scatter_separate = True
     else:
         day_and_night_scatter_separate = False
+    if text[14] == 'None':
+        points_tag = None
+    else:
+        points_tag = text[14]
 
 if scatters_only == True:
     point_dataframes = []
