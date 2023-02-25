@@ -77,7 +77,7 @@ def total_snow_colormap():
 
 # create nws snow colormap
 def nws_snow_colormap():
-    cmap = colors.ListedColormap(['#ffffff','#7db9dd','#5594ca','#346bac','#072692','#f9ff93','#fec400','#ff8700','#db1400','#9e0000','#680000','#562a29','#d4d3fd','#ad9fdd','#916eb2'])
+    cmap = colors.ListedColormap(['#ffffff','#7db9dd','#5594ca','#346bac','#072692','#f9ff93','#fec400','#ff8700','#db1400','#9e0000','#680000','#562a29','#d4d3fd','#ad9fdd','#916eb2','#916eb2'])
     return cmap
 
 # create colormap for total precip plotting
@@ -87,7 +87,7 @@ def weatherbell_precip_colormap():
 
 # create colormap for hourly snow plotting
 def hourly_snow_colormap():
-    cmap = colors.ListedColormap(['#FFFFFF', '#cccccc', '#7fb2ff', '#1933b2', '#7fff7f', '#0c660c', '#ffff66', '#a51900', '#ff99ff', '#660766', '#666666'])
+    cmap = colors.ListedColormap(['#FFFFFF', '#cccccc', '#7fb2ff', '#1933b2', '#7fff7f', '#0c660c', '#ffff66', '#a51900', '#ff99ff', '#660766', '#9455f4'])
     return cmap
 
 # create colormap for hourly precip plotting
@@ -97,7 +97,7 @@ def hourly_precip_colormap():
 
 # create colormap for temp plotting
 def temp_colormap():
-    cmap = colors.ListedColormap(['#ffffff','#7f1786','#8634e5','#8469c7','#ea33f7','#3c8925','#5dca3b','#a0fc4e','#75fb4c','#0000f5','#458ef7','#4fafe8','#6deaec','#75fbfd','#ffff54','#eeee4e','#f9d949','#f2a95f','#ef8955','#ef8632','#fbe5dd','#f3b1ba','#ed736f','#db4138','#dc4f25','#ea3323','#bc271a','#c3882e','#824b2d','#7f170e'])
+    cmap = colors.ListedColormap(['#7f1786','#8634e5','#8469c7','#ea33f7','#3c8925','#5dca3b','#a0fc4e','#75fb4c','#0000f5','#458ef7','#4fafe8','#6deaec','#75fbfd','#ffff54','#eeee4e','#f9d949','#f2a95f','#ef8955','#ef8632','#fbe5dd','#f3b1ba','#ed736f','#db4138','#dc4f25','#ea3323','#bc271a','#c3882e','#824b2d','#7f170e'])
     return cmap
 
 # create colormap for slr plotting
@@ -314,7 +314,7 @@ def find_elevation(gh1, gh2, parameter_pair, temperature):
     return elevation
 
 
-def day_night_scatters(points,domain,plot_states,plot_counties):
+def day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties):
     print('Plotting day/night scatters...')
     empty_df = pd.DataFrame(columns=['name','forecast_hour','valid_time','total_snow'])
 
@@ -323,10 +323,15 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
     for n in range(len(points)):
         name = points[n][0]
         lat,lon = float(points[n][1]),float(points[n][2])
+
         if lat < domain[2] or lat > domain[0] or lon < domain[1] or lon > domain[3]:
             continue
         else:
-            names.append(name)
+            if points_tag != None:
+                if points[n][-1] == points_tag:
+                    names.append(name)
+            else:
+                names.append(name)
 
     if len(names) == 0:
         print('No points in domain')
@@ -341,8 +346,12 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
             valid_time = datetime.strptime(valid_time, date_format)
             hour = valid_time.hour
 
-            if hour == 8 or hour == 16:
-                empty_df = empty_df.append({'name':name,'latitude':df['latitude'][row],'longitude':df['longitude'][row],'forecast_hour':df['forecast_hour'][row],'valid_time':df['valid_time'][row],'total_snow':df['total_snow'][row]}, ignore_index=True)
+            if day_and_night_scatter_separate == True:
+                if hour == 8 or hour == 16:
+                    empty_df = empty_df.append({'name':name,'latitude':df['latitude'][row],'longitude':df['longitude'][row],'forecast_hour':df['forecast_hour'][row],'valid_time':df['valid_time'][row],'total_snow':df['total_snow'][row]}, ignore_index=True)
+            else:
+                if hour == 16:
+                    empty_df = empty_df.append({'name':name,'latitude':df['latitude'][row],'longitude':df['longitude'][row],'forecast_hour':df['forecast_hour'][row],'valid_time':df['valid_time'][row],'total_snow':df['total_snow'][row]}, ignore_index=True)
 
     first_forecast_hour = empty_df['forecast_hour'][0]
     date_format = "%Y-%m-%d %H:%M:%S%z"
@@ -386,7 +395,10 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
 
         month_day = valid_time.strftime("%m/%d")
 
-        label = day_of_week + ' ' + day_night + ' (' + hour_range + ') - ' + month_day
+        if day_and_night_scatter_separate == True:
+            label = day_of_week + ' ' + day_night + ' (' + hour_range + ') - ' + month_day
+        else:
+            label = day_of_week + ' - ' + month_day
 
         empty_df['valid_time'][row] = label
 
@@ -407,6 +419,7 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
         texts = []
 
         cmap = nws_snow_colormap()
+        cmap.set_over(color='#6600cc')
         bounds = [0,1,2,3,4,6,8,12,18,24,30,36,48,60,72,96]
 
         for resort in range(len(df)):
@@ -416,7 +429,9 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
             latitude = df['latitude'][resort]
             longitude = df['longitude'][resort]
 
-            texts.append(ax.annotate(name + ' ' + str(total_snow)+'"', (longitude, latitude), xytext=(longitude, latitude), transform=ccrs.PlateCarree(), fontsize=9, fontweight='bold', color=cmap(np.digitize(total_snow, bounds)-1)))
+            point_text = name + '\n' + str(total_snow)+'"'
+
+            texts.append(ax.annotate(point_text, (longitude, latitude), xytext=(longitude, latitude), transform=ccrs.PlateCarree(), fontsize=8, fontweight='bold', color=cmap(np.digitize(total_snow, bounds)-1)))
             plt.plot(longitude,latitude,'o',color=cmap(np.digitize(total_snow, bounds)-1),markersize=3,transform=ccrs.PlateCarree())
 
         norm = colors.BoundaryNorm(bounds, cmap.N)
@@ -436,10 +451,10 @@ def day_night_scatters(points,domain,plot_states,plot_counties):
             ax.add_feature(USCOUNTIES.with_scale('500k'),linewidth=0.2, edgecolor='black')
 
         plt.title('Total Snowfall - '+valid_time,fontsize=12,color='white',fontweight='bold')
-        save_label = valid_time.replace('/','-').replace(' ','_')
-        save_label = save_label.split('(')[0]+save_label.split(')')[1]
-        save_label = save_label.replace('_','')
-        save_label = save_label.split('-')[1]+'-'+save_label.split('-')[2]+'-'+save_label.split('-')[0]
+        if day_and_night_scatter_separate == True:
+            save_label = (valid_time.split(' ')[-1]).replace('/','-')+'-'+(valid_time.split(' ')[0])+(valid_time.split(' ')[1])
+        else:
+            save_label = (valid_time.split(' ')[2]).replace('/','-')+'-'+valid_time.split(' ')[0]
         plt.savefig(directory+'outputs/scatters/'+save_label+'.png',bbox_inches='tight',dpi=300)
 
     
@@ -451,54 +466,55 @@ with open('model_config.txt', 'r') as myfile:
         config = text[arg].split('=')[1]
         config = config.replace(' ','')
         text[arg] = config
-    directory = text[0]
+    directory = os.path.dirname(os.path.realpath(__file__))+'/'
 
     if os.name == 'nt':
         clear_prompt = 'cls'
     else:
         clear_prompt = 'clear'
 
-    if text[1] == 'True':
+    if text[0] == 'True':
         ingest = True
     else:
         ingest = False
-    if text[2] == 'True':
+    if text[1] == 'True':
         canadian = True
     else:
         canadian = False
-    american_data_percentage = float(text[3])
-    if text[4] == 'True':
+    # american_data_percentage = float(text[2])
+    american_data_percentage = 0.5
+    if text[2] == 'True':
         compute_wind = True
     else:
         compute_wind = False
     
-    # snow_temp,mix_temp = float(text[5].split(',')[0]),float(text[5].split(',')[1])
     snow_temp,mix_temp = 34,38
 
-    step = int(text[5])
-    first_frame = int(text[6])
-    max_frame = int(text[7])
-    ingest_source = text[8]
-    if text[9] == 'True':
+    step = int(text[3])
+    first_frame = int(text[4])
+    max_frame = int(text[5])
+    # ingest_source = text[7]
+    ingest_source = 'nomads'
+    if text[6] == 'Detect':
         detect_recent_run = True
+        datestr,cycle = get_datestr_and_cycle(canadian)
     else:
         detect_recent_run = False
-    datestr = text[10]
-    cycle = text[11]
-    plot_types = text[12].split(',')
-    if text[13] == 'True':
+        datestr,cycle = text[6][0:8],text[6][8:10]
+    plot_types = text[7].split(',')
+    if text[8] == 'True':
         plot_states = True
     else:
         plot_states = False
-    if text[14] == 'True':
+    if text[9] == 'True':
         plot_counties = True
     else:
         plot_counties = False
-    if text[15] == 'True':
+    if text[10] == 'True':
         plot_points = True
     else:
         plot_points = False
-    domain = text[16].split(',')
+    domain = text[11].split(',')
     if len(domain) != 4:
         with open('domains.txt', 'r') as myfile:
             domain_text=myfile.read()
@@ -512,12 +528,20 @@ with open('model_config.txt', 'r') as myfile:
                 quit()
     for i in range(len(domain)):
         domain[i] = float(domain[i])
-    if text[17] == 'True':
-        day_night_scatters_only = True
+    if text[12] == 'None':
+        points_tag = None
     else:
-        day_night_scatters_only = False
+        points_tag = text[12]
+    if text[13] == 'True':
+        scatters_only = True
+    else:
+        scatters_only = False
+    if text[14] == 'True':
+        day_and_night_scatter_separate = True
+    else:
+        day_and_night_scatter_separate = False
 
-if day_night_scatters_only == True:
+if scatters_only == True:
     point_dataframes = []
     with open(directory+'points.txt', 'r') as myfile:
         text=myfile.read()
@@ -530,7 +554,7 @@ if day_night_scatters_only == True:
         df = pd.DataFrame(columns=['tp','snow','t2m','slr','wind','total_tp','total_snow','valid_time'])
         point_dataframes.append(df)
     
-    day_night_scatters(points,domain,plot_states,plot_counties)
+    day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties)
     quit()
 
 
@@ -563,7 +587,7 @@ if os.path.exists(directory) == False:
     print('\n\nERROR: Directory does not exist\n')
     quit()
 if compute_wind == False and 'wind' in plot_types:
-    print('\n\nERROR: wind must be set to True to plot wind\n')
+    print('\n\nERROR: compute_wind must be set to True to plot wind\n')
     quit()
 for plot_type in plot_types:
     if plot_type not in ['tp','total_snow','total_tp','snow','t2m','slr','wind','ptype','']:
@@ -581,10 +605,6 @@ if domain [0] < domain[2]:
 if domain[1] < 180 and domain[3] > 180:
     print('\n\nERROR: Domain cannot cross the 180th meridian\n')
     quit()
-
-# get the date and cycle if user requests to detect the most recent run
-if detect_recent_run == True:
-    datestr,cycle = get_datestr_and_cycle(canadian)
 
 # turn the date and cycle into a datetime object
 init_datetime = datetime.strptime(datestr+cycle,'%Y%m%d%H')
@@ -659,7 +679,6 @@ for frame in range(first_frame,max_frame+1,step):
     # download initialization grib files if the user requests to ingest data
     if ingest == True:
         ingest_frame(frame,datestr,cycle,ingest_source,canadian,compute_wind)
-
 
     print('Opening and pre-processing initialization data...')
     # open the upper air init file
@@ -749,6 +768,7 @@ for frame in range(first_frame,max_frame+1,step):
         reg_ds['t_avg'] = (reg_ds['t_avg']*american_data_percentage) + (canadian_ds['t_avg']*(1-american_data_percentage))
         reg_ds['gh_avg'] = (reg_ds['gh_avg']*american_data_percentage) + (canadian_ds['gh_avg']*(1-american_data_percentage))
         reg_ds['tp'] = (reg_ds['tp']*american_data_percentage) + (canadian_ds['tp']*(1-american_data_percentage))
+
         if compute_wind == True:
             reg_ds['wind'] = (reg_ds['wind']*american_data_percentage) + (canadian_ds['wind']*(1-american_data_percentage))
 
@@ -791,9 +811,9 @@ for frame in range(first_frame,max_frame+1,step):
                                       reg_ds['tp_maxed'])
 
     reg_ds['ptype'] = xr.where((reg_ds['tp']) < 0.01, 0.25,
-        xr.where(reg_ds['t2m_avg'] > float(mix_temp), 0.499999+(reg_ds['tp_maxed']),
-            xr.where(reg_ds['t2m_avg'] > float(snow_temp), 0.999999+(reg_ds['tp_maxed']),
-                1.499999+(reg_ds['tp_maxed']))))
+        xr.where(reg_ds['t2m_avg'] > float(mix_temp), 0.49999+(reg_ds['tp_maxed']),
+            xr.where(reg_ds['t2m_avg'] > float(snow_temp), 0.99999+(reg_ds['tp_maxed']),
+                1.49999+(reg_ds['tp_maxed']))))
 
     # if the frame is the first frame, create the total_ds dataset, otherwise add the snowfall and precip to the total_ds dataset
     if frame == first_frame+step:
@@ -813,16 +833,16 @@ for frame in range(first_frame,max_frame+1,step):
         total_tp_value = float(total_ds['tp'].sel(latitude=lat,longitude=lon,method='nearest').values)
         total_snow_value = float(total_ds['snow'].sel(latitude=lat,longitude=lon,method='nearest').values)
         t2m_value = float(reg_ds['t2m'].sel(latitude=lat,longitude=lon,method='nearest').values)
+        t2m_avg_value = float(reg_ds['t2m_avg'].sel(latitude=lat,longitude=lon,method='nearest').values)
         slr_value = float(reg_ds['slr'].sel(latitude=lat,longitude=lon,method='nearest').values)
+        ptype_value = float(reg_ds['ptype'].sel(latitude=lat,longitude=lon,method='nearest').values)
         if compute_wind == True:
             wind_value = float(reg_ds['wind'].sel(latitude=lat,longitude=lon,method='nearest').values)
         # freezing_level_value = float(reg_ds['freezing_level'].sel(latitude=lat,longitude=lon,method='nearest').values)
         if compute_wind == True:
-            # new_row = {'tp':tp_value,'snow':snow_value,'t2m':t2m_value,'slr':slr_value,'wind':wind_value,'total_tp':total_tp_value,'total_snow':total_snow_value,'freezing_level':freezing_level_value,'forecast_hour':frame,'elevation':elevation}
-            new_row = {'tp':tp_value,'snow':snow_value,'t2m':t2m_value,'slr':slr_value,'wind':wind_value,'total_tp':total_tp_value,'total_snow':total_snow_value,'forecast_hour':frame,'elevation':elevation,'latitude':lat,'longitude':lon}
+            new_row = {'tp':tp_value,'snow':snow_value,'t2m':t2m_value,'t2m_avg':t2m_avg_value,'slr':slr_value,'wind':wind_value,'total_tp':total_tp_value,'total_snow':total_snow_value,'forecast_hour':frame,'elevation':elevation,'latitude':lat,'longitude':lon,'ptype':ptype_value}
         else:
-            # new_row = {'tp':tp_value,'snow':snow_value,'t2m':t2m_value,'slr':slr_value,'total_tp':total_tp_value,'total_snow':total_snow_value,'freezing_level':freezing_level_value,'forecast_hour':frame,'elevation':elevation}
-            new_row = {'tp':tp_value,'snow':snow_value,'t2m':t2m_value,'slr':slr_value,'total_tp':total_tp_value,'total_snow':total_snow_value,'forecast_hour':frame,'elevation':elevation,'latitude':lat,'longitude':lon}
+            new_row = {'tp':tp_value,'snow':snow_value,'t2m':t2m_value,'t2m_avg':t2m_avg_value,'slr':slr_value,'total_tp':total_tp_value,'total_snow':total_snow_value,'forecast_hour':frame,'elevation':elevation,'latitude':lat,'longitude':lon,'ptype':ptype_value}
         point_dataframes[n] = point_dataframes[n].append(new_row, ignore_index=True)
 
 
@@ -845,6 +865,7 @@ for frame in range(first_frame,max_frame+1,step):
         if plot_type == 'total_snow':
             # colormap = total_snow_colormap()
             colormap = nws_snow_colormap()
+            colormap.set_over(color='#6600cc')
             # bounds = [0,1,2,4,6,8,10,12,15,18,21,24,27,30,33,36,42,48]
             bounds = [0,1,2,3,4,6,8,12,18,24,30,36,48,60,72,96]
             # tick_labels = ['0','1','2','4','6','8','10','12','15','18','21','24','27','30','33','36','42','48']
@@ -852,23 +873,27 @@ for frame in range(first_frame,max_frame+1,step):
             plot_label,units = 'Total Snowfall (in)','"'
         elif plot_type == 'total_tp':
             colormap = weatherbell_precip_colormap()
+            colormap.set_over(color='#aca0c7')
             bounds = [0,0.01,0.03,0.05,0.075,0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.2,1.4,1.6,1.8,2,2.5,3,3.5,4,5,6,7,8,9,10]#,11,12,13,14,15,16,17,18,19,20])
-            tick_labels = [str(x) for x in bounds]
+            tick_locations = [0,0.1,0.5,1,2,5,10]
+            tick_labels = [str(x) for x in tick_locations]
             plot_label,units = 'Total Precipitation (in)','"'
         elif plot_type == 'snow':
             colormap = hourly_snow_colormap()
+            colormap.set_over(color='#6600cc')
             bounds = [0,0.1,0.5,0.75,1,1.5,2,2.5,3,3.5,4]
             tick_labels = [str(x) for x in bounds]
             plot_label,units = str(step)+' Hour Snowfall (in)','"'
         elif plot_type == 'tp':
             colormap = hourly_precip_colormap()
+            colormap.set_over('#4fc3f7')
             bounds = [0,0.01,0.03,0.05,0.075,0.1,0.15,0.2,0.25,0.3,0.4,0.5]
             tick_labels = [str(x) for x in bounds]
             plot_label,units = str(step)+' Hour Precipitation (in)','"'
         elif plot_type == 't2m':
             colormap = temp_colormap()
-            bounds = [-100,-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110]
-            tick_labels = [str(x) for x in bounds]
+            bounds = [-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110]
+            tick_labels = ['-30','-20','-10','0','10','20','30','40','50','60','70','80','90','100','110']
             plot_label,units = 'Temperature (F)','F'
         elif plot_type == 'slr':
             colormap = slr_colormap()
@@ -897,7 +922,12 @@ for frame in range(first_frame,max_frame+1,step):
             parameter = plot_type
 
         if plot_type != 'ptype':
-            cf = ax.contourf(plot_ds.longitude, plot_ds.latitude, plot_ds[parameter], transform=ccrs.PlateCarree(), cmap=colormap, norm=norm, levels=bounds)
+            if plot_type == 'slr':
+                cf = ax.contourf(plot_ds.longitude, plot_ds.latitude, plot_ds[parameter], transform=ccrs.PlateCarree(), cmap=colormap, norm=norm, levels=bounds)
+            elif plot_type == 't2m':
+                cf = ax.contourf(plot_ds.longitude, plot_ds.latitude, plot_ds[parameter], transform=ccrs.PlateCarree(), cmap=colormap, norm=norm, levels=bounds, extend='both', extendfrac=0.1)
+            else:
+                cf = ax.contourf(plot_ds.longitude, plot_ds.latitude, plot_ds[parameter], transform=ccrs.PlateCarree(), cmap=colormap, norm=norm, levels=bounds, extend='max', extendfrac=0.1)
         else:
             cf = ax.pcolormesh(plot_ds.longitude, plot_ds.latitude, plot_ds[parameter], transform=ccrs.PlateCarree(), cmap=colormap, norm=norm)
 
@@ -911,7 +941,7 @@ for frame in range(first_frame,max_frame+1,step):
                 ax.plot(lon, lat, marker='o', color='black', markersize=2, transform=ccrs.PlateCarree())
 
         cbar = plt.colorbar(cf, ax=ax, orientation='horizontal', pad=0.04, label=plot_label)
-        if plot_type != 'ptype':
+        if plot_type != 'ptype' and plot_type != 'total_tp':
             cbar.set_ticks([float(i) for i in tick_labels])
             cbar.set_ticklabels(tick_labels)
         else:
@@ -933,7 +963,6 @@ for frame in range(first_frame,max_frame+1,step):
             plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label,fontsize=12)
         else:
             plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units,fontsize=12)
-            
 
         ax.coastlines()
         ax.add_feature(cfeature.BORDERS)
@@ -945,7 +974,6 @@ for frame in range(first_frame,max_frame+1,step):
         plt.savefig(directory+'outputs/figures/'+plot_type+'/'+plot_type+'_'+str(frame)+'.png', dpi=300, bbox_inches='tight')
         ax.cla()
         plt.clf()
-
 
     times.append(time.time()-start)
 
@@ -991,6 +1019,24 @@ for frame in range(first_frame,max_frame+1,step):
         df['valid_time'] = df['forecast_hour'].apply(lambda x: init_datetime + timedelta(hours=x))
         df['valid_time'] = df['valid_time'].apply(lambda x: x.replace(tzinfo=from_zone).astimezone(to_zone))
 
+        df.loc[df['t2m_avg'] <= mix_temp, 'ptype'] = 2
+        df.loc[df['t2m_avg'] <= snow_temp, 'ptype'] = 3
+        df.loc[df['t2m_avg'] > mix_temp, 'ptype'] = 1
+        
+        ptypes = []
+
+        initial_ptype_time = df.iloc[0]['valid_time']
+        initial_ptype = df.iloc[0]['ptype']
+        ptypes.append([initial_ptype_time,initial_ptype])
+
+        for i in range(3,df.shape[0],3):
+            if df.iloc[i]['ptype'] != ptypes[-1][1] or i == 3:
+                ptypes.append([df.iloc[i-3]['valid_time'],df.iloc[i]['ptype']])
+        final_ptype_time = df.iloc[-1]['valid_time']
+        final_ptype = ptypes[-1][1]
+        if final_ptype_time != ptypes[-1][0]:
+            ptypes.append([final_ptype_time,final_ptype])
+
         # adjust each valid time to the correct timezone, find the snow and precip values at 8am and 4pm
         tick_times = []
         tick_labels = []
@@ -1033,6 +1079,11 @@ for frame in range(first_frame,max_frame+1,step):
         plt.subplot(3,2,1)
         plt.plot(df_times,df['snow'],color='blue',linewidth=2)
         plt.title('Snow',fontsize=15)
+        if max(df['snow']) < 5:
+            max_tick = float(round(max(df['snow']),1)+0.5)
+        else:
+            max_tick = float(round(max(df['snow']),1)+1)
+        plt.ylim(0, max_tick)
         plt.xlim(df_times[0],df_times[-1])
         plt.grid()
 
@@ -1052,8 +1103,23 @@ for frame in range(first_frame,max_frame+1,step):
         plt.subplot(3,2,3)
         plt.plot(df_times,df['tp'],color='green',linewidth=2)
         plt.title('Precip',fontsize=15)
+        if max(df['tp']) < 0.5:
+            max_tick = float(round(max(df['tp']),1)+0.05)
+        else:
+            max_tick = float(round(max(df['tp']),1)+0.1)
+        plt.ylim(0, max_tick)
         plt.xlim(df_times[0],df_times[-1])
         plt.grid()
+
+        ptype_colors = {0: 'white', 1: 'green', 2: 'orange', 3: 'blue'}
+        for p in range(1,len(ptypes)):
+            plt.axvspan(ptypes[p-1][0], ptypes[p][0], facecolor=ptype_colors[ptypes[p-1][1]], alpha=0.1)
+            ptype_label = datetime.strftime(ptypes[p][0], '%m/%d %H')
+            # if p != 1 and p != len(ptypes)-1:
+            #     plt.text(ptypes[p][0],max_tick,ptype_label,ha='center',va='top',fontsize=11,color='black',rotation=90)
+
+
+
 
         plt.subplot(3,2,4)
         plt.plot(df_times,df['total_tp'],color='green',linewidth=2)
@@ -1129,7 +1195,7 @@ for frame in range(first_frame,max_frame+1,step):
     #             images.append(imageio.imread('outputs/figures/'+plot_type+'/'+plot_type+'_'+str(frame_number)+'.png'))
     #         imageio.mimsave(directory+'outputs/gifs/'+plot_type+'.gif', images, duration=0.2)
 
-day_night_scatters(points,domain,plot_states,plot_counties)
+day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties)
 
 os.system(clear_prompt)
 print('Done with model run: '+datestr+cycle+'z')
