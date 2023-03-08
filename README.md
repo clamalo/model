@@ -1,4 +1,4 @@
-# Model Documentation - updated February 25, 2023
+# Model Documentation - updated March 7, 2023
 
 ### Python and conda installation
 First thing’s first, you’re going to need to install Python to run the code. Here, we’re using conda which will allow us to easily standardize Python packages across operating systems. 
@@ -103,12 +103,12 @@ Make sure that there is no blank extra line in the config file. When you’re do
 ### Changing points
 The point forecast plots are completely customizable. In the model directory, there is a file called ```points.txt```. You can open this file the same way you opened ```model_config.txt```. Inside the file, you’ll find a lot of my presaved points. Feel free to use this list, add to it, or create your own. 
 
-The format for a point is ```name,latitude,longitude,elevation,tag```. Make sure that the longitude is in a -180-180 format. Be sure that there are no extra/empty lines in the file. The major resorts in my ```points.txt``` file are tagged with "Work", meaning if I set the ```points_tag``` variable in ```model_config.txt``` as "Work", it will only plot these points. Make sure that there is no blank extra line in the points file.
+The format for a point is ```name,latitude,longitude,region,tag```. Make sure that the longitude is in a -180-180 format. Be sure that there are no extra/empty lines in the file. The major resorts in my ```points.txt``` file are tagged with "Work", meaning if I set the ```points_tag``` variable in ```model_config.txt``` as "Work", it will only plot these points. If you don't want to assign a tag to a point, you can leave the tag blank, but there should be four commas in every line. Make sure that there is no blank extra line at the end of the points file.
 
 When running the model, it will only plot points that are within the selected domain (automatically detected based on the latitudes and longitudes).
 
 ### Saving domains
-You can save frequented domains in the ```domains.txt``` file. To do so, open the file and follow the same top latitude, west longitude, bottom latitude, east longitude format as before. Inside the file, you’ll find several of my presaved domains. Feel free to use this list, add to it, or create your own. Be sure that there are no extra/empty lines in the file. The domains in this file are referenced by the ```domain``` parameter if a string domain is set in ```model_config.txt```. Make sure that there is no blank extra line in the domains file.
+You can save frequented domains in the ```domains.txt``` file. To do so, open the file and follow the same top latitude, west longitude, bottom latitude, east longitude format as before. Inside the file, you’ll find several of my presaved domains. Feel free to use this list, add to it, or create your own. Be sure that there are no extra/empty lines in the file. The domains in this file are referenced by the ```domain``` parameter if a string domain is set in ```model_config.txt```. Make sure that there is no blank extra line at the end of the domains file.
 
 ### Running the model
 If you’ve made it this far, congratulations! You’ve made it past the hardest part. Now for the fun part: running the model.
