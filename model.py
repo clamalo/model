@@ -272,19 +272,18 @@ def ingest_frame(frame,datestr,cycle,ingest_source,canadian,compute_wind):
                     time.sleep(60+(time.time()-last_download_time))
 
         #american data ingestion
-        if ingest and not(canadian and american_data_percentage == 0):
-            threads = [threading.Thread(target=download_25_file, args=(ingest_frame_number,ingest_source,compute_wind)) for ingest_frame_number in frames]
-            for thread in threads:
-                thread.start()
-            for thread in threads:
-                thread.join()
-            if frames[0] == 0:
-                frames = frames[1:]
-            threads = [threading.Thread(target=download_flux_file, args=(ingest_frame_number,ingest_source)) for ingest_frame_number in frames]
-            for thread in threads:
-                thread.start()
-            for thread in threads:
-                thread.join()
+        threads = [threading.Thread(target=download_25_file, args=(ingest_frame_number,ingest_source,compute_wind)) for ingest_frame_number in frames]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        if frames[0] == 0:
+            frames = frames[1:]
+        threads = [threading.Thread(target=download_flux_file, args=(ingest_frame_number,ingest_source)) for ingest_frame_number in frames]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
 
         #canadian data ingestion
         if canadian == True:
@@ -315,6 +314,33 @@ def find_elevation(gh1, gh2, parameter_pair, temperature):
 
 
 def day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties):
+
+    if type(domain) != list:
+        domain_name = domain
+        directory_name = domain_name.lower()
+    else:
+        domain_name = 'custom'
+        directory_name = 'custom'
+
+    if not os.path.exists(directory+'outputs/scatters/'+directory_name):
+        os.makedirs(directory+'outputs/scatters/'+directory_name)
+    for the_file in os.listdir(directory+'outputs/scatters/'+directory_name):
+        os.remove(directory+'outputs/scatters/'+directory_name+'/'+the_file)
+
+    if type(domain) != list:
+        with open(directory+'domains.txt', 'r') as myfile:
+            domain_text=myfile.read()
+            domain_text = domain_text.replace(' ','')
+            domain_text = domain_text.split('\n')
+            for i in range(len(domain_text)):
+                if domain_text[i].split('=')[0] == domain_name:
+                    domain = domain_text[i].split('=')[1].split(',')
+            if len(domain) != 4:
+                print('\n\nERROR: Requested domain not found in domains.txt\n')
+                quit()
+    for i in range(len(domain)):
+        domain[i] = float(domain[i])
+
     print('Plotting day/night scatters...')
     empty_df = pd.DataFrame(columns=['name','forecast_hour','valid_time','total_snow'])
 
@@ -455,18 +481,19 @@ def day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,
             save_label = (valid_time.split(' ')[-1]).replace('/','-')+'-'+(valid_time.split(' ')[0])+(valid_time.split(' ')[1])
         else:
             save_label = (valid_time.split(' ')[2]).replace('/','-')+'-'+valid_time.split(' ')[0]
-        plt.savefig(directory+'outputs/scatters/'+save_label+'.png',bbox_inches='tight',dpi=300)
+        plt.savefig(directory+'outputs/scatters/'+domain_name+'/'+save_label+'.png',bbox_inches='tight',dpi=300)
 
-    
+directory = os.path.dirname(os.path.realpath(__file__))+'/'
 # open the model config file and read in the parameters
-with open('model_config.txt', 'r') as myfile:
+with open(directory+'model_config.txt', 'r') as myfile:
     text=myfile.read()
     text = text.split('\n')
     for arg in range(len(text)):
+        if text[arg] == '':
+            continue
         config = text[arg].split('=')[1]
         config = config.replace(' ','')
         text[arg] = config
-    directory = os.path.dirname(os.path.realpath(__file__))+'/'
 
     if os.name == 'nt':
         clear_prompt = 'cls'
@@ -481,7 +508,6 @@ with open('model_config.txt', 'r') as myfile:
         canadian = True
     else:
         canadian = False
-    # american_data_percentage = float(text[2])
     american_data_percentage = 0.5
     if text[2] == 'True':
         compute_wind = True
@@ -493,7 +519,6 @@ with open('model_config.txt', 'r') as myfile:
     step = int(text[3])
     first_frame = int(text[4])
     max_frame = int(text[5])
-    # ingest_source = text[7]
     ingest_source = 'nomads'
     if text[6] == 'Detect':
         detect_recent_run = True
@@ -515,19 +540,9 @@ with open('model_config.txt', 'r') as myfile:
     else:
         plot_points = False
     domain = text[11].split(',')
-    if len(domain) != 4:
-        with open('domains.txt', 'r') as myfile:
-            domain_text=myfile.read()
-            domain_text = domain_text.replace(' ','')
-            domain_text = domain_text.split('\n')
-            for i in range(len(domain_text)):
-                if domain_text[i].split('=')[0] == domain[0]:
-                    domain = domain_text[i].split('=')[1].split(',')
-            if len(domain) != 4:
-                print('\n\nERROR: Requested domain not found in domains.txt\n')
-                quit()
-    for i in range(len(domain)):
-        domain[i] = float(domain[i])
+    if len(domain) == 1:
+        domain = domain[0]
+    domain_name = domain
     if text[12] == 'True':
         scatters_only = True
     else:
@@ -553,10 +568,23 @@ if scatters_only == True:
             continue
         df = pd.DataFrame(columns=['tp','snow','t2m','slr','wind','total_tp','total_snow','valid_time'])
         point_dataframes.append(df)
-    
+
     day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties)
     quit()
 
+if type(domain) != list:
+    with open(directory+'domains.txt', 'r') as myfile:
+        domain_text=myfile.read()
+        domain_text = domain_text.replace(' ','')
+        domain_text = domain_text.split('\n')
+        for i in range(len(domain_text)):
+            if domain_text[i].split('=')[0] == domain:
+                domain = domain_text[i].split('=')[1].split(',')
+        if len(domain) != 4:
+            print('\n\nERROR: Requested domain not found in domains.txt\n')
+            quit()
+for i in range(len(domain)):
+    domain[i] = float(domain[i])
 
 # check the parameters for errors
 if step == 0:
@@ -619,9 +647,6 @@ if not os.path.exists(sub_directory):
 sub_directory = directory+'outputs/figures/'
 if not os.path.exists(sub_directory):
     os.makedirs(sub_directory)
-sub_directory = directory+'outputs/gifs/'
-if not os.path.exists(sub_directory):
-    os.makedirs(sub_directory)
 sub_directory = directory+'files/gribs/'
 if not os.path.exists(sub_directory):
     os.makedirs(sub_directory)
@@ -631,6 +656,8 @@ if not os.path.exists(sub_directory):
 sub_directory = directory+'outputs/points/'
 if not os.path.exists(sub_directory):
     os.makedirs(sub_directory)
+for filename in os.listdir(sub_directory):
+    os.remove(sub_directory+filename)
 sub_directory = directory+'outputs/scatters/'
 if not os.path.exists(sub_directory):
     os.makedirs(sub_directory)
@@ -940,7 +967,8 @@ for frame in range(first_frame,max_frame+1,step):
                     continue
                 ax.plot(lon, lat, marker='o', color='black', markersize=2, transform=ccrs.PlateCarree())
 
-        cbar = plt.colorbar(cf, ax=ax, orientation='horizontal', pad=0.04, label=plot_label)
+        cbar = plt.colorbar(cf, ax=ax, orientation='horizontal', pad=0.02, shrink = 0.8, aspect=40)#, label=plot_label)
+
         if plot_type != 'ptype' and plot_type != 'total_tp':
             cbar.set_ticks([float(i) for i in tick_labels])
             cbar.set_ticklabels(tick_labels)
@@ -951,18 +979,25 @@ for frame in range(first_frame,max_frame+1,step):
         min_value = round(float(plot_ds[parameter].min().values),1)
         init_label = init_datetime.strftime('%m/%d %Hz')
         valid_label = (init_datetime + timedelta(hours=frame)).strftime('%m/%d %Hz')
+        day_of_week = (init_datetime + timedelta(hours=frame)).strftime('%A')[0:3]
+        valid_label = day_of_week + ' ' + valid_label
 
         if first_frame != 0 and plot_type in ['total_tp','total_snow']:
-            forecast_hour_label = 'FH'+str(first_frame)+'-'+str(frame)
+            forecast_hour_label = 'Hour '+str(first_frame)+'-'+str(frame)
         else:
-            forecast_hour_label = 'FH'+str(frame)
+            forecast_hour_label = 'Hour '+str(frame)
 
         if plot_type == 't2m':
-            plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units+', Min: '+str(min_value)+units,fontsize=12)
+            plt.title(plot_label + " • Init: " + init_label, fontsize=10, loc='left')
+            plt.title(forecast_hour_label + ' • Valid: ' + valid_label, fontsize=10, loc='right')
+            fig.text(0.9, 0.14, 'Max: '+str(max_value)+units+', Min: '+str(min_value)+units, fontsize=8, ha='right', va='bottom')
         elif plot_type == 'ptype':
-            plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label,fontsize=12)
+            plt.title(plot_label + " • Init: " + init_label, fontsize=10, loc='left')
+            plt.title(forecast_hour_label + ' • Valid: ' + valid_label, fontsize=10, loc='right')
         else:
-            plt.title(plot_label+' || '+forecast_hour_label+' || Init: '+init_label+' || Valid: '+valid_label+' || Max: '+str(max_value)+units,fontsize=12)
+            plt.title(plot_label + " • Init: " + init_label, fontsize=10, loc='left')
+            plt.title(forecast_hour_label + ' • Valid: ' + valid_label, fontsize=10, loc='right')
+            fig.text(0.9, 0.14, 'Max: ' + str(max_value) + units, fontsize=8, ha='right', va='bottom')
 
         ax.coastlines()
         ax.add_feature(cfeature.BORDERS)
@@ -977,7 +1012,7 @@ for frame in range(first_frame,max_frame+1,step):
 
     times.append(time.time()-start)
 
-    # if the frame is not the max frame and not a multiple of 24, skip it
+    # if the frame is not the max frame and not a multiple of step*8, skip it
     if frame != max_frame and frame%(step*8) != 0:
         continue
 
@@ -986,6 +1021,7 @@ for frame in range(first_frame,max_frame+1,step):
     for n in range(len(points)):
 
         name = points[n][0]
+        point_domain = points[n][3]
         lat,lon = float(points[n][1]),float(points[n][2])
 
         # if the point is outside of the simulated domain, skip it
@@ -1047,7 +1083,11 @@ for frame in range(first_frame,max_frame+1,step):
             hour = valid_time.hour
             if hour == 8 or hour == 16:
                 valid_time = df.iloc[i]['valid_time']
-                valid_time = valid_time.strftime('%m/%d %H')
+                day_of_week = valid_time.strftime('%A')[0:3]
+                if hour == 8:
+                    valid_time = day_of_week + ' ' + valid_time.strftime('%m/%d %H')
+                else:
+                    valid_time = valid_time.strftime('%m/%d %H')
 
                 tick_times.append(df.iloc[i]['valid_time'])
                 tick_labels.append(valid_time)
@@ -1068,7 +1108,6 @@ for frame in range(first_frame,max_frame+1,step):
         halfway_precip_values = []
         for x in range(1,len(total_tp_values)):
             halfway_precip_values.append(total_tp_values[x]-total_tp_values[x-1])
-
 
         # plot the data on subplots
         fig,ax = plt.subplots(figsize=(20,15))
@@ -1110,16 +1149,10 @@ for frame in range(first_frame,max_frame+1,step):
         plt.ylim(0, max_tick)
         plt.xlim(df_times[0],df_times[-1])
         plt.grid()
-
         ptype_colors = {0: 'white', 1: 'green', 2: 'orange', 3: 'blue'}
         for p in range(1,len(ptypes)):
             plt.axvspan(ptypes[p-1][0], ptypes[p][0], facecolor=ptype_colors[ptypes[p-1][1]], alpha=0.1)
             ptype_label = datetime.strftime(ptypes[p][0], '%m/%d %H')
-            # if p != 1 and p != len(ptypes)-1:
-            #     plt.text(ptypes[p][0],max_tick,ptype_label,ha='center',va='top',fontsize=11,color='black',rotation=90)
-
-
-
 
         plt.subplot(3,2,4)
         plt.plot(df_times,df['total_tp'],color='green',linewidth=2)
@@ -1131,6 +1164,9 @@ for frame in range(first_frame,max_frame+1,step):
         plt.ylim(0, max_tick)
         plt.xlim(df_times[0],df_times[-1])
         plt.grid()
+        for p in range(1,len(ptypes)):
+            plt.axvspan(ptypes[p-1][0], ptypes[p][0], facecolor=ptype_colors[ptypes[p-1][1]], alpha=0.1)
+            ptype_label = datetime.strftime(ptypes[p][0], '%m/%d %H')
 
         ax1 = plt.subplot(3,2,5)
         plt.plot(df_times,df['t2m'],color='red',linewidth=2)
@@ -1182,20 +1218,12 @@ for frame in range(first_frame,max_frame+1,step):
         init_label = init_datetime.strftime('%m/%d %Hz')
 
         plt.suptitle("Point Forecast: "+name+" (Grid Elevation: "+str(round(df['elevation'][0]))+"') - Init: "+init_label, fontsize=20)
-        plt.savefig(directory+'outputs/points/'+name+'.png')
-    
-    # print('Generating GIFs...')
-    # # on the last frame, make the output images into gifs
-    # if frame == max_frame:
-    #     for plot_type in plot_types:
-    #         if plot_type == '':
-    #             continue
-    #         images = []
-    #         for frame_number in range(step,max_frame+1,step):
-    #             images.append(imageio.imread('outputs/figures/'+plot_type+'/'+plot_type+'_'+str(frame_number)+'.png'))
-    #         imageio.mimsave(directory+'outputs/gifs/'+plot_type+'.gif', images, duration=0.2)
+        plt.savefig(directory+'outputs/points/'+point_domain+'-'+name+'.png')
 
-day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties)
+
+# for domain in ['Utah','Colorado','California','PNW']:
+for domain in [domain_name]:
+    day_night_scatters(points,day_and_night_scatter_separate,domain,plot_states,plot_counties)
 
 os.system(clear_prompt)
 print('Done with model run: '+datestr+cycle+'z')
